@@ -155,10 +155,10 @@ El plan de contingencia usaria IaC para una recreacion rapida de infraestructura
 
 | Tipo          | Pros                                          | Contras                                         | Costos (Modelo) | Flexibilidad/Escala | Cumplimiento      | Cambio Proveedor |
 | :- | :- | :- | :- | :- | :- | :- |
-| **Publica**   | Bajo CAPEX, pago x uso, alta escala/elastica | Menor control, riesgo lock-in, costos variables | OPEX            | Muy Alta            | Certificaciones   | Moderado a Alto  |
-| **Privada**   | Maximo control, seguridad directa, predecible | Alto CAPEX, menor elastica, gestion compleja    | CAPEX + OPEX    | Baja                | Control Directo   | Bajo    |
+| **Publica**   | Bajo CAPEX, pago x uso, elastica | Menor control, riesgo lock-in | OPEX            | Muy Alta            | certificaciones   | Moderado  |
+| **Privada**   | Maximo control, seguridad directa | Alto CAPEX, menos elastica    | CAPEX + OPEX    | Baja                | Control directo   | Bajo    |
 | **Hibrida**   | Flexibilidad, optimiza costos/seguridad     | Complejidad, conectividad   | Mixto           | Moderada     | Mixto             | Moderado         |
-| **Multi-Cloud**| Evita lock-in, usa mejor servicio, resiliencia | Maxima complejidad, posible latencia inter-nube | OPEX (Multiple) | Alta                | Configuracion     | Bajo             |
+| **Multi-Cloud**| Evita lock-in, usa mejor servicio, resiliencia | Maxima complejidad, posible latencia entre nubes | OPEX  | Alta                | Configuracion     | Bajo             |
 
 
 ### C. Ejercicio de presentación de "mini-proyecto"
@@ -208,3 +208,4 @@ graph LR
     E --> C; 
     C --> D;
 ```
+
