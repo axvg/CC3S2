@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+## [v1.0-day3] - 2025-04-10
+### Added
+- Implementacion de la clase `Quiz` en `trivia.py`:
+    - Constructor (`__init__`).
+    - Metodo `add_question(question)` con validacion de tipo.
+    - Metodo `get_next_question()` para obtener la siguiente pregunta o None.
+    - Metodo `has_more_questions()` para verificar si quedan preguntas.
+- Funcion `run_basic_quiz()` en `main.py` para demostracion basica en temrinal.
+- Pruebas unitarias para la clase `Quiz` en `test_trivia.py` que cubren:
+    - Creacion.
+    - Adicion de preguntas (validas e invalidas).
+    - Flujo de `get_next_question()` y `has_more_questions()`.
+
 ## [v1.0-day2] - 2025-04-09
 ### Added
 - Implementacion de la clase `Question` en `trivia.py` con:
