@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [v1.0-day4] - 2025-04-11
+### Added
+- Sistema de puntuacion en clase `Quiz`:
+    - Atributos `correct_answers` e `incorrect_answers`.
+    - Metodo `answer_question(question, answer)` para procesar respuesta y actualizar puntuacion.
+    - Metodo `get_score()` para obtener resumen de puntuacion.
+- Logica de rondas en clase `Quiz`:
+    - Atributo `total_rounds` (configurable, por defecto 10).
+    - `get_next_question()` y `has_more_questions()` ahora respetan `total_rounds`.
+- Implementacion del flujo de juego en `main.py` (`run_quiz`):
+    - Bienvenida e instrucciones.
+    - Seleccion y mezcla de N preguntas de un banco (`ALL_QUESTIONS`).
+    - Bucle principal para N rondas: muestra pregunta, obtiene input del usuario (con validacion basica), procesa respuesta y da feedback.
+    - Muestra resumen final de puntuacion.
+- Preguntas de ejemplo (`ALL_QUESTIONS`) en `main.py`.
+- Pruebas unitarias en `test_trivia.py` para:
+    - Puntuacion inicial.
+    - Logica de `answer_question` (correcta/incorrecta).
+    - Puntuacion acumulada.
+    - Limite de rondas (`total_rounds`).
+- `flake8` añadido, fix de archivos *.py para flake8.
+
+
 ## [v1.0-day3] - 2025-04-10
 ### Added
 - Implementacion de la clase `Quiz` en `trivia.py`:
