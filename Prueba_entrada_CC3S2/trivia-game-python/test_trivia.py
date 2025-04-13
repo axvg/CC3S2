@@ -14,6 +14,7 @@ def test_question_creation_valid():
     assert q.description == QUESTION_DESC
     assert q.options == OPTIONS
     assert q.correct_answer == CORRECT_ANSWER
+    assert q.difficulty == 1
 
 
 def test_question_creation_invalid_description():
@@ -55,6 +56,7 @@ def test_question_str_representation():
     q = Question(QUESTION_DESC, OPTIONS, CORRECT_ANSWER)
     # Dividir string largo para cumplir E501
     expected_str = (
+        "[Dificultad 1]\n"
         "¿Cual es la capital de Francia?\n"
         "1) Madrid\n"
         "2) Londres\n"
@@ -62,6 +64,22 @@ def test_question_str_representation():
         "4) Berlin"
     )
     assert str(q) == expected_str
+
+
+def test_question_creation_with_difficulty():
+    """Verifica creacion con dificultad especifica."""
+    q = Question("Desc", ["A", "B"], "A", difficulty=2)
+    assert q.difficulty == 2
+
+
+def test_question_creation_invalid_difficulty():
+    """Verifica que falla con dificultad invalida."""
+    with pytest.raises(ValueError):
+        Question("Desc", ["A", "B"], "A", difficulty=0)
+    with pytest.raises(ValueError):
+        Question("Desc", ["A", "B"], "A", difficulty=-1)
+    with pytest.raises(ValueError):
+        Question("Desc", ["A", "B"], "A", difficulty=1.5)
 
 
 # --- Pruebas para la clase Quiz ---
