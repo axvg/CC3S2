@@ -108,7 +108,8 @@ class Quiz:
         Verifica si el juego debe continuar.
         """
         within_rounds = self.current_question_index < self.total_rounds
-        return within_rounds
+        has_questions = self.current_question_index < len(self.questions)
+        return within_rounds and has_questions
 
     def get_score(self):
         """Devuelve la puntuacion actual"""
