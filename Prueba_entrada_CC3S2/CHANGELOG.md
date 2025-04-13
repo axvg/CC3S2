@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [v1.0-day5] - 2025-04-12
+### Added
+- Atributo `difficulty` a la clase `Question` (con tests).
+- Banco de preguntas `ALL_QUESTIONS` actualizado con niveles de dificultad.
+- Resumen detallado de errores al final del juego en `run_quiz`.
+- `flake8-html` para reportes diarios en html.
+### Changed
+- `run_quiz` modificado para integrar seleccion por dificultad.
+- Update de pruebas unitarias para dificultad.
+- Interfaz de usuario en consola (`run_quiz`) mejorada (clear_console, emojis).
+
 ## [v1.0-day4] - 2025-04-11
 ### Added
 - Sistema de puntuacion en clase `Quiz`:
