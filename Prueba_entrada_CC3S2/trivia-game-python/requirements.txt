@@ -12,6 +12,8 @@ colorama==0.4.6
 ConfigArgParse==1.7
 databases==0.9.0
 fastapi==0.115.12
+flake8==7.2.0
+flake8-html==0.4.3
 Flask==3.1.0
 flask-cors==5.0.1
 Flask-Login==0.6.3
@@ -28,15 +30,18 @@ Jinja2==3.1.6
 locust==2.34.1
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
+mccabe==0.7.0
 mdurl==0.1.2
 msgpack==1.1.0
 packaging==24.2
 pbr==6.1.1
 pluggy==1.5.0
 psutil==7.0.0
+pycodestyle==2.13.0
 pycparser==2.22
 pydantic==2.11.3
 pydantic_core==2.33.1
+pyflakes==3.3.2
 Pygments==2.19.1
 pytest==8.3.5
 python-dotenv==1.1.0
