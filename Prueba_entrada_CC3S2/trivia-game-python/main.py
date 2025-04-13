@@ -1,4 +1,5 @@
 import random
+import os
 from fastapi import FastAPI
 from trivia import Question, Quiz
 
@@ -61,12 +62,17 @@ ALL_QUESTIONS = [
 ]
 
 
+def clear_console():
+    """Limpia la consola en Windows o Linux/Mac."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 def run_quiz(num_questions_to_ask=10):
     """Ejecuta el juego de trivia completo."""
     print("Bienvenido al juego de trivia!")
-    print("Bienvenido al juego de trivia!")
-    print("Responde las siguientes preguntas seleccionando el numero de la")
-    print("opcion correcta. La dificultad se ajustará según tu desempeno.")
+    print("Responde las siguientes preguntas seleccionando el numero de "
+          "la opcion correcta.")
+    print("La dificultad se ajustara segun tu desempeno.")
     print("-" * 50)
 
     quiz = Quiz(total_rounds=num_questions_to_ask)
@@ -119,11 +125,14 @@ def run_quiz(num_questions_to_ask=10):
                     result = quiz.answer_question(question, selected_answer)
 
                     if result:
-                        print("Correcto!")
+                        print("Correcto! ✅")
                     else:
-                        print("Incorrecto. La respuesta correcta era: "
+                        print("Incorrecto ❌. La respuesta correcta era: "
                               f"{question.correct_answer}")
                         quiz.incorrect_answers += 1
+                    print("\nPresiona Enter para continuar...")
+                    input()
+                    clear_console()
             except ValueError:
                 print(
                     "Entrada invalida. Se considera como respuesta incorrecta."
