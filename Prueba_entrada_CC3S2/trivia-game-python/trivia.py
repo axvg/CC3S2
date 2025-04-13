@@ -1,10 +1,8 @@
-# import random
-
 class Question:
     """Clase usada para preguntas de trivia con
         opciones y respuesta correcta."""
 
-    def __init__(self, description, options, correct_answer):
+    def __init__(self, description, options, correct_answer, difficulty=1):
         """
         Inicializa una pregunta.
 
@@ -21,10 +19,13 @@ class Question:
             raise ValueError(
                 "La respuesta correcta debe estar entre las opciones."
             )
+        if not isinstance(difficulty, int) or difficulty < 1:
+            raise ValueError("La dificultad debe ser un entero positivo.")
 
         self.description = description
         self.options = options
         self.correct_answer = correct_answer
+        self.difficulty = difficulty
 
     def is_correct(self, answer):
         """
@@ -43,7 +44,8 @@ class Question:
         options_str = "\n".join(
             f"{i + 1}) {opt}" for i, opt in enumerate(self.options)
         )
-        return f"{self.description}\n{options_str}"
+        return f"[Dificultad {self.difficulty}]\n" \
+            f"{self.description}\n{options_str}"
 
 
 class Quiz:
@@ -75,7 +77,7 @@ class Quiz:
             return None
 
         question = self.questions[self.current_question_index]
-        self.current_question_index += 1    # avanzamos
+        self.current_question_index += 1
         return question
 
     def answer_question(self, question, answer):
@@ -105,10 +107,8 @@ class Quiz:
         """
         Verifica si el juego debe continuar.
         """
-        # Linea potencialmente larga, verificar y dividir si es necesario
         within_rounds = self.current_question_index < self.total_rounds
-        within_questions = self.current_question_index < len(self.questions)
-        return within_rounds and within_questions
+        return within_rounds
 
     def get_score(self):
         """Devuelve la puntuacion actual"""
