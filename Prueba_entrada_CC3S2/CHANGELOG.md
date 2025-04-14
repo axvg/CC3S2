@@ -1,6 +1,13 @@
 # Changelog
 
-## [Unreleased]
+##  [v1.0-day6] - 2025-04-13
+### Added
+- Archivo de workflow de GitHub Actions `.github/workflows/pe.yml`:
+    - Se ejecuta en push/pull_request `develop`.
+    - Ejecuta `flake8` para linting.
+    - Ejecuta `bandit` para analisis de seguridad basico.
+    - Ejecuta `pytest` para correr todas las pruebas (unitarias y de integracion).
+- Pruebas de integracion basicas en `test_api.py`:
 
 ## [v1.0-day5] - 2025-04-12
 ### Added
