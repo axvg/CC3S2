@@ -2,6 +2,8 @@ import random
 import os
 from fastapi import FastAPI
 from trivia import Question, Quiz
+from pydantic import BaseModel
+
 
 app = FastAPI()
 
@@ -151,11 +153,43 @@ def run_quiz(num_questions_to_ask=10):
     print("=" * 50)
 
 
-if __name__ == "__main__":
-    run_quiz(num_questions_to_ask=10)
+class QuestionModel(BaseModel):
+    description: str | None = ""
+    options: list[str] = []
+    correct_answer: str | None = ""
+    difficulty: int = 1
 
 
 @app.get("/")
-def read_root():
-    """Endpoint raiz de la API."""
+async def root():
     return {"message": "API de Trivia"}
+
+
+@app.get("/questions")
+async def get_questions():
+    """Obtiene todas las preguntas disponibles"""
+    data = []
+    for q in ALL_QUESTIONS:
+        data.append({
+            "description": q.description,
+            "options": q.options,
+            "correct_answer": q.correct_answer,
+            "difficulty": q.difficulty
+        })
+    return {"questions": data}
+
+
+@app.post("/questions")
+async def create_question(q: QuestionModel):
+    new_question = Question(
+        description=q.description,
+        options=q.options,
+        correct_answer=q.correct_answer,
+        difficulty=q.difficulty
+    )
+    ALL_QUESTIONS.append(new_question)
+    return {"message": "Pregunta agregada exitosamente."}
+
+
+if __name__ == "__main__":
+    run_quiz(num_questions_to_ask=10)
