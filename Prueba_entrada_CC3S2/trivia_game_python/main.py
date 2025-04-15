@@ -1,6 +1,9 @@
 import random
 import os
 from fastapi import FastAPI
+from sqlalchemy import create_engine, Column, Integer, String, ARRAY
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
 from trivia import Question, Quiz
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -12,6 +15,31 @@ database_url = os.getenv("DATABASE_URL")
 app_title = os.getenv("APP_TITLE", "Trivia API Default")
 
 app = FastAPI(title=app_title)
+
+
+# --- SQLAlchemy setup ---
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+class QuestionDB(Base):
+    __tablename__ = "questions"
+    id = Column(Integer, primary_key=True, index=True)
+    description = Column(String, nullable=False)
+    options = Column(ARRAY(String), nullable=False)
+    correct_answer = Column(String, nullable=False)
+    difficulty = Column(Integer, default=1)
+
+Base.metadata.create_all(bind=engine)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # --- Banco de Preguntas ---
 ALL_QUESTIONS = [
@@ -171,6 +199,8 @@ class QuestionModel(BaseModel):
     correct_answer: Optional[str] = ""
     difficulty: int = 1
 
+    class Config:
+        orm_mode = True
 
 @app.get("/")
 async def root():
@@ -178,29 +208,25 @@ async def root():
 
 
 @app.get("/questions")
-async def get_questions():
-    """Obtiene todas las preguntas disponibles"""
-    data = []
-    for q in ALL_QUESTIONS:
-        data.append({
-            "description": q.description,
-            "options": q.options,
-            "correct_answer": q.correct_answer,
-            "difficulty": q.difficulty
-        })
-    return {"questions": data}
+async def get_questions(db: Session = Depends(get_db)):
+    questions = db.query(QuestionDB).all()
+    return {"questions": [QuestionModel.from_orm(q) for q in questions]}
 
 
 @app.post("/questions")
-async def create_question(q: QuestionModel):
-    new_question = Question(
+async def create_question(q: QuestionModel, db: Session = Depends(get_db)):
+    if q.correct_answer not in q.options:
+        raise HTTPException(status_code=400, detail="La respuesta correcta debe estar entre las opciones.")
+    question = QuestionDB(
         description=q.description,
         options=q.options,
         correct_answer=q.correct_answer,
         difficulty=q.difficulty
     )
-    ALL_QUESTIONS.append(new_question)
-    return {"message": "Pregunta agregada exitosamente."}
+    db.add(question)
+    db.commit()
+    db.refresh(question)
+    return {"message": "Pregunta agregada exitosamente.", "id": question.id}
 
 
 if __name__ == "__main__":
