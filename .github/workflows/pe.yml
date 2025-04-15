@@ -41,3 +41,12 @@ jobs:
       - name: coverage > 70%?
         run: |
           pytest --cov=Prueba_entrada_CC3S2/trivia_game_python --cov-report=xml --cov-report=term-missing --cov-fail-under=70 ./Prueba_entrada_CC3S2/trivia_game_python
+
+      - name: Start FastAPI server in background
+        run: |
+          uvicorn Prueba_entrada_CC3S2.trivia_game_python.main:app --host 127.0.0.1 --port 8000 &
+          sleep 5
+
+      - name: Run Locust test
+        run: |
+          locust -f Prueba_entrada_CC3S2/trivia_game_python/locustfile.py --headless -u 10 -r 2 -t 10s --host http://127.0.0.1:8000
