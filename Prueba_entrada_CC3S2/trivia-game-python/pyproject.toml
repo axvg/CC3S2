@@ -1,0 +1,19 @@
+[project]
+name = "trivia"
+version = "0.1"
+dependencies = [
+  "fastapi[standard]",
+  "bandit",
+  "flake8",
+  "flake8-html",
+  "httpx",
+  "locust",
+  "pydantic",
+  "pydantic_core",
+  "pytest",
+  "python-dotenv"
+]
+requires-python = ">=3.9"
+
+[tool.setuptools]
+py-modules = ["main", "trivia", "test_trivia", "test_api"]
