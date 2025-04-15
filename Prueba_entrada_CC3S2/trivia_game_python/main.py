@@ -31,6 +31,7 @@ class QuestionDB(Base):
     correct_answer = Column(String, nullable=False)
     difficulty = Column(Integer, default=1)
 
+
 Base.metadata.create_all(bind=engine)
 
 
@@ -40,6 +41,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 # --- Banco de Preguntas ---
 ALL_QUESTIONS = [
@@ -202,6 +204,7 @@ class QuestionModel(BaseModel):
     class Config:
         from_attributes = True
 
+
 @app.get("/")
 async def root():
     return {"message": f"API de {app.title}"}
@@ -216,7 +219,10 @@ async def get_questions(db: Session = Depends(get_db)):
 @app.post("/questions")
 async def create_question(q: QuestionModel, db: Session = Depends(get_db)):
     if q.correct_answer not in q.options:
-        raise HTTPException(status_code=400, detail="La respuesta correcta debe estar entre las opciones.")
+        raise HTTPException(
+            status_code=400,
+            detail="La respuesta correcta debe estar entre las opciones."
+        )
     question = QuestionDB(
         description=q.description,
         options=q.options,
