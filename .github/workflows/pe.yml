@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .
+          pip install ./Prueba_entrada_CC3S2/trivia-game-python
 
       - name: Lint with Flake8
         run: |
@@ -32,8 +32,8 @@ jobs:
 
       - name: Security analysis with Bandit
         run: |
-          bandit -r . -ll
+          bandit -r ./Prueba_entrada_CC3S2/trivia-game-python -ll
 
       - name: unit tests with Pytest
         run: |
-          pytest -v
+          pytest ./Prueba_entrada_CC3S2/trivia-game-python -v
