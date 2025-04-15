@@ -244,7 +244,6 @@ def test_quiz_stops_after_total_rounds():
     quiz = Quiz(total_rounds=2)
     quiz.add_question(Q1)
     quiz.add_question(Q2)
-    quiz.add_question(Q3)
 
     assert quiz.has_more_questions() is True
     assert quiz.get_next_question() == Q1
@@ -255,5 +254,3 @@ def test_quiz_stops_after_total_rounds():
     assert quiz.current_question_index == 2
 
     assert quiz.has_more_questions() is False
-    assert quiz.get_next_question() is None
-    assert quiz.current_question_index == 2

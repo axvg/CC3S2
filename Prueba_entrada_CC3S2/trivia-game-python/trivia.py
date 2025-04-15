@@ -52,7 +52,7 @@ class Quiz:
     """Maneja el flujo del juego de trivia,
         incluyendo preguntas y puntuacion."""
 
-    def __init__(self, total_rounds=10):
+    def __init__(self, total_rounds=0):
         """Inicializa un nuevo juego de trivia."""
         self.questions = []
         self.current_question_index = 0
@@ -65,6 +65,10 @@ class Quiz:
         if not isinstance(question, Question):
             raise TypeError("Solo se pueden agregar objetos de tipo Question.")
         self.questions.append(question)
+        if self.total_rounds == 0:
+            self.total_rounds = len(self.questions)
+        elif self.total_rounds < len(self.questions):
+            self.total_rounds += 1
 
     def get_next_question(self):
         """
