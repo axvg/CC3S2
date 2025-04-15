@@ -28,12 +28,12 @@ jobs:
 
       - name: Lint with Flake8
         run: |
-          flake8 Prueba_entrada_CC3S2/trivia_game_python/src/ --count --show-source --statistics
+          flake8 Prueba_entrada_CC3S2/trivia_game_python/ --count --show-source --statistics
 
       - name: Security analysis with Bandit
         run: |
-          bandit -r ./Prueba_entrada_CC3S2/trivia_game_python/src -ll
+          bandit -r ./Prueba_entrada_CC3S2/trivia_game_python -ll
 
       - name: unit tests with Pytest
         run: |
-          pytest ./Prueba_entrada_CC3S2/trivia_game_python/src -v
+          pytest ./Prueba_entrada_CC3S2/trivia_game_python -v
