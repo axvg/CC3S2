@@ -14,7 +14,7 @@ def test_read_root_status_code():
 def test_read_root_response_json():
     """Verifica el contenido JSON devuelto por el endpoint root."""
     response = client.get("/")
-    expected_json = {"message": "API de Trivia"}
+    expected_json = {"message": "API de Trivia API Default"}
     assert response.json() == expected_json
 
 
