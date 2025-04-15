@@ -1,13 +1,13 @@
 import random
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import create_engine, Column, Integer, String, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from trivia import Question, Quiz
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from typing import Optional, List
+from trivia import Question, Quiz
 
 load_dotenv()
 
@@ -18,7 +18,7 @@ app = FastAPI(title=app_title)
 
 
 # --- SQLAlchemy setup ---
-engine = create_engine(DATABASE_URL)
+engine = create_engine(database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -200,7 +200,7 @@ class QuestionModel(BaseModel):
     difficulty: int = 1
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 @app.get("/")
 async def root():
