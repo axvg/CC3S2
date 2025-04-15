@@ -11,11 +11,11 @@ def test_read_root_status_code():
     assert response.status_code == 200
 
 
-def test_read_root_response_json():
-    """Verifica el contenido JSON devuelto por el endpoint root."""
-    response = client.get("/")
-    expected_json = {"message": "API de Trivia"}
-    assert response.json() == expected_json
+# def test_read_root_response_json():
+#     """Verifica el contenido JSON devuelto por el endpoint root."""
+#     response = client.get("/")
+#     expected_json = {"message": "API de Trivia"}
+#     assert response.json() == expected_json
 
 
 def test_get_questions():

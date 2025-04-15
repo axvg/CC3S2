@@ -11,9 +11,11 @@ dependencies = [
   "pydantic",
   "pydantic_core",
   "pytest",
-  "python-dotenv"
+  "pytest-html",
+  "python-dotenv",
+  "pytest-cov"
 ]
 requires-python = ">=3.9"
 
 [tool.setuptools]
-py-modules = ["main", "trivia", "test_trivia", "test_api"]
+py-modules = ["main", "trivia", "test_trivia", "test_api", "locustfile"]

@@ -3,9 +3,14 @@ import os
 from fastapi import FastAPI
 from trivia import Question, Quiz
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
+load_dotenv()
 
-app = FastAPI()
+database_url = os.getenv("DATABASE_URL")
+app_title = os.getenv("APP_TITLE", "Trivia API Default")
+
+app = FastAPI(title=app_title)
 
 # --- Banco de Preguntas ---
 ALL_QUESTIONS = [
@@ -162,7 +167,7 @@ class QuestionModel(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "API de Trivia"}
+    return {"message": f"API de {app.title}"}
 
 
 @app.get("/questions")

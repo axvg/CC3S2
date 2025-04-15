@@ -1,5 +1,5 @@
 import pytest
-from trivia import Question, Quiz
+from trivia_game_python.trivia import Question, Quiz
 
 QUESTION_DESC = "¿Cual es la capital de Francia?"
 OPTIONS = ["Madrid", "Londres", "Paris", "Berlin"]
