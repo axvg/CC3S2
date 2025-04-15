@@ -13,7 +13,9 @@ dependencies = [
   "pytest",
   "pytest-html",
   "python-dotenv",
-  "pytest-cov"
+  "pytest-cov",
+  "SQLAlchemy",
+  "psycopg2-binary"
 ]
 requires-python = ">=3.9"
 
