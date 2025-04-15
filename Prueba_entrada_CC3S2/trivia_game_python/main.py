@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from trivia import Question, Quiz
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from typing import Optional, List
 
 load_dotenv()
 
@@ -165,9 +166,9 @@ def run_quiz(num_questions_to_ask=10):
 
 
 class QuestionModel(BaseModel):
-    description: str | None = ""
-    options: list[str] = []
-    correct_answer: str | None = ""
+    description: Optional[str] = ""
+    options: List[str] = []
+    correct_answer: Optional[str] = ""
     difficulty: int = 1
 
 
