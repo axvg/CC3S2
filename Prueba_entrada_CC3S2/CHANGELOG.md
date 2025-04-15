@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.0-day7] - 2025-04-15
+### Added
+- Integración completa de FastAPI con PostgreSQL usando SQLAlchemy.
+- Endpoints `/questions` (GET y POST) ahora usan la base de datos.
+- Uso de variables de entorno y archivo `.env.example` para configuración de la base de datos. Este debe cambiarse de nombre a `.env` para la prueba local.
+- Decorador `@pytest.mark.skip` para saltar tests de API si es necesario.
+- Pipeline de GitHub Actions ejecuta tests, lint, bandit y pruebas de carga con Locust.
+
+### Changed
+- Docker Compose actualizado para levantar tanto la API como PostgreSQL.
+- Refactorización de la lógica de preguntas para usar SQLAlchemy en vez de listas en memoria.
+
+### Fixed
+- Corrección de variables de entorno inconsistentes entre `.env`, `docker-compose.yml` y el código.
+- Solución de problemas de importación y dependencias en los tests de integración.
+
+
 ##  [v1.0-day6] - 2025-04-13
 ### Added
 - Archivo de workflow de GitHub Actions `.github/workflows/pe.yml`:

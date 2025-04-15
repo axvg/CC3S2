@@ -1,11 +1,47 @@
 import random
 import os
-from fastapi import FastAPI
-from trivia import Question, Quiz
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy import create_engine, Column, Integer, String, ARRAY
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel
+from dotenv import load_dotenv
+from typing import Optional, List
+from trivia import Question, Quiz
+
+load_dotenv()
+
+database_url = os.getenv("DATABASE_URL")
+app_title = os.getenv("APP_TITLE", "Trivia API Default")
+
+app = FastAPI(title=app_title)
 
 
-app = FastAPI()
+# --- SQLAlchemy setup ---
+engine = create_engine(database_url)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+class QuestionDB(Base):
+    __tablename__ = "questions"
+    id = Column(Integer, primary_key=True, index=True)
+    description = Column(String, nullable=False)
+    options = Column(ARRAY(String), nullable=False)
+    correct_answer = Column(String, nullable=False)
+    difficulty = Column(Integer, default=1)
+
+
+Base.metadata.create_all(bind=engine)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 # --- Banco de Preguntas ---
 ALL_QUESTIONS = [
@@ -65,8 +101,14 @@ ALL_QUESTIONS = [
 
 
 def clear_console():
-    """Limpia la consola en Windows o Linux/Mac."""
-    os.system('cls' if os.name == 'nt' else 'clear')
+    """Limpia la consola en Windows o Linux/Mac de forma segura."""
+    try:
+        if os.name == 'nt':
+            os.system("cls")
+        else:
+            os.system("clear")
+    except Exception:
+        pass
 
 
 def run_quiz(num_questions_to_ask=10):
@@ -154,41 +196,43 @@ def run_quiz(num_questions_to_ask=10):
 
 
 class QuestionModel(BaseModel):
-    description: str | None = ""
-    options: list[str] = []
-    correct_answer: str | None = ""
+    description: Optional[str] = ""
+    options: List[str] = []
+    correct_answer: Optional[str] = ""
     difficulty: int = 1
+
+    class Config:
+        from_attributes = True
 
 
 @app.get("/")
 async def root():
-    return {"message": "API de Trivia"}
+    return {"message": f"API de {app.title}"}
 
 
 @app.get("/questions")
-async def get_questions():
-    """Obtiene todas las preguntas disponibles"""
-    data = []
-    for q in ALL_QUESTIONS:
-        data.append({
-            "description": q.description,
-            "options": q.options,
-            "correct_answer": q.correct_answer,
-            "difficulty": q.difficulty
-        })
-    return {"questions": data}
+async def get_questions(db: Session = Depends(get_db)):
+    questions = db.query(QuestionDB).all()
+    return {"questions": [QuestionModel.from_orm(q) for q in questions]}
 
 
 @app.post("/questions")
-async def create_question(q: QuestionModel):
-    new_question = Question(
+async def create_question(q: QuestionModel, db: Session = Depends(get_db)):
+    if q.correct_answer not in q.options:
+        raise HTTPException(
+            status_code=400,
+            detail="La respuesta correcta debe estar entre las opciones."
+        )
+    question = QuestionDB(
         description=q.description,
         options=q.options,
         correct_answer=q.correct_answer,
         difficulty=q.difficulty
     )
-    ALL_QUESTIONS.append(new_question)
-    return {"message": "Pregunta agregada exitosamente."}
+    db.add(question)
+    db.commit()
+    db.refresh(question)
+    return {"message": "Pregunta agregada exitosamente.", "id": question.id}
 
 
 if __name__ == "__main__":

@@ -1,8 +1,11 @@
 FROM python:3.13-slim
 
+
+RUN mkdir -p /app
+
 WORKDIR /app
 
-COPY requirements.txt .
+COPY pyproject.toml .
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install .
