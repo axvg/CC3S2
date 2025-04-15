@@ -70,8 +70,14 @@ ALL_QUESTIONS = [
 
 
 def clear_console():
-    """Limpia la consola en Windows o Linux/Mac."""
-    os.system('cls' if os.name == 'nt' else 'clear')
+    """Limpia la consola en Windows o Linux/Mac de forma segura."""
+    try:
+        if os.name == 'nt':
+            os.system("cls")
+        else:
+            os.system("clear")
+    except Exception:
+        pass
 
 
 def run_quiz(num_questions_to_ask=10):
