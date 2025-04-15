@@ -39,6 +39,6 @@ Esto levantara:
 ### 4. Accede a la API
 
 - Documentacion interactiva: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Endpoint de `questions`: [http://localhost:8000]
+- Endpoint de `questions`: [http://localhost:8000/questions]
 
 - Al inicio no habra preguntas porque la base de datos sera nueva, para crear preguntas se puede usar la documentacion interactiva usando `POST` requests.
