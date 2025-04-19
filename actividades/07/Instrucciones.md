@@ -375,6 +375,13 @@ Escenario: Comer pepinos y esperar en minutos y segundos
   Entonces mi estómago debería gruñir
 ```
 
+Despues de realizar cambios en `belly_steps.py` y `belly.feature` se obtienen los siguientes tests:
+
+![00](img/00.png)
+
+Para esto se usa patterns de regex para obtener horas, minutos y segundos de manera separada. Al inicio se reemplaza los valores para limpiar inputs.
+
+
 #### Ejercicio 2: **Manejo de cantidades fraccionarias de pepinos**
 
 **Objetivo**  

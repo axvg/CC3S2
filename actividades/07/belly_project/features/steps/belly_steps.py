@@ -23,28 +23,57 @@ def step_given_eaten_cukes(context, cukes):
 @when('espero {time_description}')
 def step_when_wait_time_description(context, time_description):
     time_description = time_description.strip('"').lower()
-    time_description = time_description.replace('y', ' ')
+    time_description = re.sub(r'\s+y\s+|\s*,\s*', ' ', time_description)
     time_description = time_description.strip()
 
-    # Manejar casos especiales como 'media hora'
+    total_time_in_hours = 0
+
     if time_description == 'media hora':
         total_time_in_hours = 0.5
     else:
-        # Expresión regular para extraer horas y minutos
-        pattern = re.compile(r'(?:(\w+)\s*horas?)?\s*(?:(\w+)\s*minutos?)?')
-        match = pattern.match(time_description)
+        hours = 0
+        minutes = 0
+        seconds = 0
 
-        if match:
-            hours_word = match.group(1) or "0"
-            minutes_word = match.group(2) or "0"
+        match_h = re.search(r'(\d+|\w+)\s*(?:horas?|h)', time_description)
+        if match_h:
+            try:
+                hours = convertir_palabra_a_numero(match_h.group(1))
+                time_description = time_description.replace(match_h.group(0), '', 1).strip()
+            except ValueError as e:
+                print(f"Error al interpretar horas: {e}")
 
-            hours = convertir_palabra_a_numero(hours_word)
-            minutes = convertir_palabra_a_numero(minutes_word)
 
-            total_time_in_hours = hours + (minutes / 60)
-        else:
-            raise ValueError(f"No se pudo interpretar la descripción del tiempo: {time_description}")
+        match_m = re.search(r'(\d+|\w+)\s*(?:minutos?|m)', time_description)
+        if match_m:
+            try:
+                minutes = convertir_palabra_a_numero(match_m.group(1))
+                time_description = time_description.replace(match_m.group(0), '', 1).strip()
+            except ValueError as e:
+                print(f"Error al interpretar minutos: {e}")
 
+
+        match_s = re.search(r'(\d+|\w+)\s*(?:segundos?|s)', time_description)
+        if match_s:
+            try:
+                seconds = convertir_palabra_a_numero(match_s.group(1))
+                time_description = time_description.replace(match_s.group(0), '', 1).strip()
+            except ValueError as e:
+                 print(f"Error la interpretar segundos: {e}")
+
+        time_description_cleaned = time_description.replace('y','').replace(',','').strip()
+        if time_description_cleaned and hours == 0 and minutes == 0 and seconds == 0:
+            try:
+                hours = convertir_palabra_a_numero(time_description_cleaned.split()[0])
+            except ValueError:
+                 raise ValueError(f"No se pudo interpretar la descripcion del tiempo: '{time_description}' (Restante: '{time_desc_cleaned}')")
+
+        total_time_in_hours = hours + (minutes / 60.0) + (seconds / 3600.0)
+
+    if total_time_in_hours < 0:
+        raise ValueError(f"El tiempo de espera calculado no puede ser negativo: {total_time_in_hours} horas (Input: '{time_description}')")
+
+    # print(f"Esperando {total_time_in_hours} horas (interpretado de '{time_description}')")
     context.belly.esperar(total_time_in_hours)
 
 @then('mi estómago debería gruñir')
