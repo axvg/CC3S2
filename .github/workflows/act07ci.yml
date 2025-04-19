@@ -1,0 +1,49 @@
+name: Belly Project
+
+on:
+  push:
+    paths:
+      - 'actividades/07/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      working-directory: ./actividades/07/belly_project
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run behave tests
+      working-directory: ./actividades/07/belly_project
+      run: |
+        mkdir -p test-results
+        behave --junit --junit-directory test-results/
+      continue-on-error: true
+
+    - name: Run pytest unit tests
+      working-directory: ./actividades/07/belly_project
+      run: |
+        mkdir -p test-results
+        pytest tests/ --junitxml=test-results/pytest-results.xml
+      continue-on-error: true
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: ./actividades/07/belly_project/test-results/
