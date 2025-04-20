@@ -55,7 +55,7 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
      Ingrese la URL del repositorio para el submódulo:
      ```
    - **Usuario:** Escribe, por ejemplo:  
-     `https://github.com/usuario/repositorio-submodulo.git`
+     `https://github.com/axvg/repositorio-submodulo.git`
    - El script solicita:
      ```
      Ingrese el directorio donde se ubicará el submódulo:
@@ -64,7 +64,7 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
      `libs/submodulo`
    - **Script:** Ejecuta:
      ```bash
-     git submodule add https://github.com/usuario/repositorio-submodulo.git libs/submodulo
+     git submodule add https://github.com/axvg/repositorio-submodulo.git libs/submodulo
      git submodule update --init --recursive
      ```
    - **Salida esperada:**  
@@ -72,6 +72,16 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
      ```
      Submódulo agregado en: libs/submodulo
      ```
+
+En este caso se necesita copiar el link `git@github.com:axvg/repositorio-submodulo.git` porque si se usa el link con https se necesita poner las credenciales en la terminal.
+
+
+![01](img/01.png)
+
+![02](img/02.png)
+
+![03](img/03.png)
+
 
 3. **Opción: Gestión de ramas (Opción 4)**
 
@@ -104,6 +114,8 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
        Rama 'feature/login' creada y activada.
        ```
 
+![04](img/04.png)
+
 4. **Opción: Gestión de git diff (Opción 9)**
 
    - **Usuario:** Selecciona la opción `9` del menú principal.
@@ -129,6 +141,10 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
        ```
      - **Usuario:** Escribe `feature/login`.
      - **Script:** Ejecuta `git diff master feature/login` y muestra las diferencias entre ambas ramas en la terminal.
+
+![05](img/05.png)
+
+Aca podria agregar un mensaje cuando haya dos ramas que sean iguales y no tengan diferencias
 
 5. **Opción: Gestión de hooks (Opción 10)**
 
@@ -161,6 +177,10 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
        Hook 'pre-commit' instalado.
        ```
 
+![10](img/10.png)
+![11](img/11.png)
+
+
 6. **Finalizar la Sesión**
 
    - **Usuario:** Cuando termine de utilizar las opciones deseadas, regresa al menú principal y selecciona `11` para salir:
@@ -171,10 +191,27 @@ del menú. Recuerda que, al ejecutarlo, verás mensajes en tiempo real en la ter
 ### Preguntas
 
 - **¿Qué diferencias observas en el historial del repositorio después de restaurar un commit mediante reflog?**
+
+Restaurar un commit usando `reflog` y `git reset --hard` como hace el script reescribe la historia de la rama actual. El commit que selecciona del reflog se convierte en el nuevo HEAD de la rama. Todos los commits que vinieron despues de ese punto en esa rama se pierden de la historia principal de la rama. Para alguien que vea el historial despues del reset parecera que esos commits posteriores nunca ocurrieron en esa linea de desarrollo.
+
 - **¿Cuáles son las ventajas y desventajas de utilizar submódulos en comparación con subtrees?**
+
+Los submodulos mantienen los repositorios completamente separados. El repositorio principal solo almacena una referencia un puntero a un commit especifico del repositorio del submodulo. La ventaja es que es muy claro que version del submodulo estas usando y actualizarlo a una nueva version es un paso controlado (`git submodule update --remote`). La desventaja es que el flujo de trabajo es mas complejo los colaboradores necesitan inicializar (`git submodule init`) y actualizar (`git submodule update`) los submodulos manualmente despues de clonar o hacer pull.
+
+Los subtrees copian archivos y el historial del otro repositorio directamente dentro de tu repositorio principal mezclando su contenido e historia. La ventaja es que el flujo de trabajo es mas simple una vez añadido funciona como cualquier otro directorio en tu proyecto no hay comandos especiales para clonar o hacer pull. La desventaja es que tu repositorio principal crece mas en tamaño y el historial se vuelve mas complejo. Actualizar el codigo del subtree desde su origen o enviar cambios de vuelta al origen es un proceso mas manual y por esto puede tener mas errores que con submodulos.
+
 - **¿Cómo impacta la creación y gestión de hooks en el flujo de trabajo y la calidad del código?**
+
+Genera un impacto positivo en el flujo de trabajo y la calidad al automatizar verificaciones y forzar estandares. Hooks como `pre-commit` o `pre-push` pueden ejecutar automaticamente linters formateadores de codigo, tests unitarios o verificar mensajes de commit. En el caso de python estos pueden ser `flake8`, `black`, y tests de `pytest`. Esto asegura que el codigo que entra al repositorio cumple ciertos criterios de calidad y consistencia antes de ser compartido (cuando distintos usuarios usan distintos formatters puede generara merge conflicts). Reduce la carga de revision manual para problemas comunes y previene que codigo roto o mal formateado llegue a la rama principal o al pipeline de CI/CD.
+
 - **¿De qué manera el uso de `git bisect` puede acelerar la localización de un error introducido recientemente?**
+
+`git bisect` acelera la localizacion de errores porque usa una busqueda binaria en el historial de commits en lugar de una busqueda lineal. Le dices a git un commit donde el error existe (`git bisect bad`) y uno anterior donde no existia (`git bisect good`). Git automaticamente salta a un commit a mitad de camino entre esos dos. Tu pruebas ese commit y le dices a git si es bueno o malo. Git entonces descarta la mitad del historial restante donde sabes que el error no esta (o si esta) y repite el proceso saltando a la mitad del rango restante.
+
 - **¿Qué desafíos podrías enfrentar al administrar ramas y stashes en un proyecto con múltiples colaboradores?**
+
+Al administrar ramas con muchos colaboradores el principal desafio son los merge conflict que ocurren cuando varias personas modifican las mismas partes del codigo en ramas distintas. Se necesita una estrategia clara de integracion como integrar frecuentemente la rama principal en las feature branches (`pull --rebase` o `merge`) pero esto requiere coordinacion y comunicacion. Si hay ramas que viven mucho tiempo estas divergen mas y aumentan la dificultad de la fusion. Para los stashes el desafio es que son locales y temporales. Si haces `git stash` y luego bajas muchos cambios de otros colaboradores al hacer `git stash pop` o `git stash apply` es mas probable que tengas conflictos entre tus cambios guardados y los cambios nuevos.
+
 
 ### Ejercicios 
 
@@ -196,6 +233,13 @@ Ingrese el nuevo nombre para la rama: feature/authentication
 Rama 'feature/login' renombrada a 'feature/authentication'
 ```
 
+Para esto se crea un opcion `e)` que nos permite cambiar el nombre de una rama con el comando `branch -m`. Se cambia el nombre de la rama `feature/login`. Se agrego una nueva opcion `e) Renombrar una rama` al sub-menu presentado. Se uso un bloque `case` para manejar esta seleccion. Con la informacion de la nueva rama ejecuta el comando `git branch -m "$rama_actual" "$nuevo_nombre"` para efectuar el renombrado y mostrando el mensaje `Rama '$rama_actual' renombrada a '$nuevo_nombre'`.
+
+![07](img/07.png)
+
+![08](img/08.png)
+
+
 2 . Amplia la sección de "Gestión de git diff" para permitir ver las diferencias de un archivo específico entre dos commits o ramas.
 
 **Instrucciones:**
@@ -213,6 +257,11 @@ Ingrese el segundo identificador (rama o commit): feature/login
 Ingrese la ruta del archivo: src/app.js
 [Mostrará el diff solo de 'src/app.js' entre las dos revisiones]
 ```
+
+Para permitir la comparacion de un archivo entre dos revisiones se actualiza la funcion `gestionar_diff`. Se introdujo una nueva opcion `d) Comparar diferencias de un archivo especifico...` en el submenu de diff. Se usa el bloque `case` y cuando se selecciona esta opcion el script solicita al usuario los dos identificadores de revision con `read id1` y `read id2` (inputs) y despues la ruta del archivo con `read archivo`. El comando usaod es  `git diff "$id1" "$id2" -- "$archivo"`.
+
+![09](img/09.png)
+
 
 3 . Crea una función que permita instalar automáticamente un hook que, por ejemplo, verifique si se han agregado comentarios de documentación en cada commit.
 
@@ -241,6 +290,11 @@ done
 exit 0
 ```
 
+Se incluye la opcion `e) Instalar hook pre-commit para verificar documentacion` en el submenu. El bloque `case` para `e|E` define la ruta del archivo como `hook_file=".git/hooks/pre-commit"`. Luego utiliza multiples comandos `echo "..." >> "$hook_file"` para escribir el script de Bash directamente en ese archivo y en el terminal. Este script primero obtiene la lista de archivos modificados o añadidos que son `.c`, `.h`, o `.js` usando `git diff --cached --name-only --diff-filter=ACM | grep ...`. Despues itera sobre estos archivos con un bucle `for`. Dentro del bucle usa `grep -q "//"` para verificar si el archivo contiene al menos un comentario de estilo `//`. Si `grep` no encuentra (`! grep -q`) ningun comentario imprime un mensaje de error y ejecuta `exit 1` lo cual detiene el proceso de commit. Si todos los archivos revisados pasan la verificacion el script termina con `exit 0` permitiendo que el commit continue. Tambien se usa `chmod +x "$hook_file"` para que el script sea ejecutables.
+
+![12](img/12.png)
+![13](img/13.png)
+
 4 . Implementa una opción en el script que realice un merge automatizado de una rama determinada en la rama actual, incluyendo la resolución automática de conflictos (siempre que sea posible).
 
 **Instrucciones:**
@@ -260,6 +314,10 @@ exit 0
 Ingrese el nombre de la rama a fusionar: feature/login
 Merge completado automáticamente utilizando la estrategia 'theirs'.
 ```
+
+Se agrego la opcion `11) Merge automatizado` a la funcion `mostrar_menu_principal`. Se creo una nueva funcion `merge_automatizado`. Esta funcion solicita al usuario el nombre de la rama a fusionar con `read rama`. Luego ejecuta el comando `git merge -X theirs "$rama"`. La opcion `-X theirs` le dice a Git que si encuentra conflictos de fusion resuelva automaticamente usando la version del codigo que viene de la rama que se esta fusionando (`$rama`). La funcion tambien comprueba el codigo de salida del comando merge (`$?`). Si es 0 (exito) informa que el merge se completo usando la estrategia theirs. Si no es 0 indica que hubo un error y se necesita revisar manualmente.
+
+![14](img/14.png)
 
 5 . Implementa una opción en el script que genere un reporte con información relevante del repositorio (estado, ramas, últimos commits, stashes, etc.) y lo guarde en un archivo.
 
@@ -286,3 +344,7 @@ Al ejecutar la función, se debe crear el archivo `reporte_git.txt` con contenid
 === Lista de stashes ===
 [Salida de git stash list]
 ```
+
+Para esto se la funcion `generar_reporte`. Esta funcion define el nombre del archivo de salida `reporte="reporte_git.txt"`. Utiliza `echo "..." > "$reporte"` para escribir el primer encabezado y crear o sobrescribir el archivo. Despues usa el operador de append `>>` para añadir al archivo los encabezados y la salida de varios comandos de Git utiles: `git status`, `git branch`, `git log -n 5 --oneline`, y `git stash list`.
+
+![15](img/15.png) 

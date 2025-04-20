@@ -41,7 +41,9 @@ function mostrar_menu_principal() {
     echo "8) Gestión de git bisect"
     echo "9) Gestión de git diff"
     echo "10) Gestión de Hooks"
-    echo "11) Salir"
+    echo "11) Merge automatizado"
+    echo "12) Generar reporte del repositorio"
+    echo "13) Salir"
     echo -n "Seleccione una opción: "
 }
 
@@ -98,7 +100,8 @@ function gestionar_ramas() {
         echo "b) Crear nueva rama y cambiar a ella"
         echo "c) Cambiar a una rama existente"
         echo "d) Borrar una rama"
-        echo "e) Volver al menú principal"
+        echo "e) Renombrar una rama"
+        echo "f) Volver al menú principal"
         echo -n "Seleccione una opción: "
         read opcion_rama
         case "$opcion_rama" in
@@ -125,6 +128,14 @@ function gestionar_ramas() {
                 echo "Rama '$rama' borrada."
                 ;;
             e|E)
+                echo -n "Ingrese el nombre de la rama actual: "
+                read rama_actual
+                echo -n "Ingrese el nuevo nombre para la rama: "
+                read nuevo_nombre
+                git branch -m "$rama_actual" "$nuevo_nombre"
+                echo "Rama '$rama_actual' renombrada a '$nuevo_nombre'."
+                ;;
+            f|F)
                 break
                 ;;
             *)
@@ -261,7 +272,8 @@ function gestionar_diff() {
         echo "a) Mostrar diferencias entre el working tree y el área de staging (git diff)"
         echo "b) Mostrar diferencias entre el área de staging y el último commit (git diff --cached)"
         echo "c) Comparar diferencias entre dos ramas o commits"
-        echo "d) Volver al menú principal"
+        echo "d) Comparar diferencias de un archivo específico entre dos commits o ramas"
+        echo "e) Volver al menú principal"
         echo -n "Seleccione una opción: "
         read opcion_diff
         case "$opcion_diff" in
@@ -281,6 +293,15 @@ function gestionar_diff() {
                 git diff "$id1" "$id2"
                 ;;
             d|D)
+                echo -n "Ingrese el primer identificador (rama o commit): "
+                read id1
+                echo -n "Ingrese el segundo identificador (rama o commit): "
+                read id2
+                echo -n "Ingrese la ruta del archivo: "
+                read archivo
+                git diff "$id1" "$id2" -- "$archivo"
+                ;;
+            e|E)
                 break
                 ;;
             *)
@@ -299,7 +320,8 @@ function gestionar_hooks() {
         echo "b) Crear/instalar un hook (ej. pre-commit)"
         echo "c) Editar un hook existente"
         echo "d) Borrar un hook"
-        echo "e) Volver al menú principal"
+        echo "e) Instalar hook pre-commit para verificar documentación"
+        echo "f) Volver al menú principal"
         echo -n "Seleccione una opción: "
         read opcion_hooks
         case "$opcion_hooks" in
@@ -319,28 +341,21 @@ function gestionar_hooks() {
                 chmod +x "$hook_file"
                 echo "Hook '$hook_name' instalado."
                 ;;
-            c|C)
-                echo -n "Ingrese el nombre del hook a editar: "
-                read hook_name
-                hook_file=".git/hooks/$hook_name"
-                if [[ -f "$hook_file" ]]; then
-                    ${EDITOR:-nano} "$hook_file"
-                else
-                    echo "El hook '$hook_name' no existe."
-                fi
-                ;;
-            d|D)
-                echo -n "Ingrese el nombre del hook a borrar: "
-                read hook_name
-                hook_file=".git/hooks/$hook_name"
-                if [[ -f "$hook_file" ]]; then
-                    rm "$hook_file"
-                    echo "Hook '$hook_name' eliminado."
-                else
-                    echo "El hook '$hook_name' no existe."
-                fi
-                ;;
             e|E)
+                hook_file=".git/hooks/pre-commit"
+                echo "#!/bin/bash" > "$hook_file"
+                echo "files=\$(git diff --cached --name-only --diff-filter=ACM | grep '\\.c\\|\\.h\\|\\.js')" >> "$hook_file"
+                echo "for file in \$files; do" >> "$hook_file"
+                echo "    if ! grep -q \"//\" \"\$file\"; then" >> "$hook_file"
+                echo "        echo \"Error: El archivo '\$file' no contiene comentarios de documentación.\"" >> "$hook_file"
+                echo "        exit 1" >> "$hook_file"
+                echo "    fi" >> "$hook_file"
+                echo "done" >> "$hook_file"
+                echo "exit 0" >> "$hook_file"
+                chmod +x "$hook_file"
+                echo "Hook pre-commit instalado para verificar documentación."
+                ;;
+            f|F)
                 break
                 ;;
             *)
@@ -348,6 +363,37 @@ function gestionar_hooks() {
                 ;;
         esac
     done
+}
+
+function merge_automatizado() {
+    echo ""
+    echo "=== Merge automatizado ==="
+    echo -n "Ingrese el nombre de la rama a fusionar: "
+    read rama
+    git merge -X theirs "$rama"
+    if [[ $? -eq 0 ]]; then
+        echo "Merge completado automáticamente utilizando la estrategia 'theirs'."
+    else
+        echo "Error durante el merge. Revise los conflictos manualmente."
+    fi
+}
+
+function generar_reporte() {
+    echo ""
+    echo "=== Generando reporte del repositorio ==="
+    reporte="reporte_git.txt"
+    echo "=== Estado del repositorio ===" > "$reporte"
+    git status >> "$reporte"
+    echo "" >> "$reporte"
+    echo "=== Ramas existentes ===" >> "$reporte"
+    git branch >> "$reporte"
+    echo "" >> "$reporte"
+    echo "=== Ultimos 5 commits ===" >> "$reporte"
+    git log -n 5 --oneline >> "$reporte"
+    echo "" >> "$reporte"
+    echo "=== Lista de stashes ===" >> "$reporte"
+    git stash list >> "$reporte"
+    echo "Reporte generado en: $reporte"
 }
 
 # Bucle principal del menú
@@ -386,6 +432,12 @@ while true; do
             gestionar_hooks
             ;;
         11)
+            merge_automatizado
+            ;;
+        12)
+            generar_reporte
+            ;;
+        13)
             echo "Saliendo del script."
             exit 0
             ;;
