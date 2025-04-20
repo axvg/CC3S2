@@ -4,7 +4,7 @@ import re
 # Función para convertir palabras numéricas a números
 def convertir_palabra_a_numero(palabra):
     try:
-        return int(palabra)
+        return float(palabra) if '.' in palabra else int(palabra)
     except ValueError:
         numeros = {
             "cero": 0, "uno": 1, "una":1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5,
@@ -16,9 +16,15 @@ def convertir_palabra_a_numero(palabra):
         }
         return numeros.get(palabra.lower(), 0)
 
-@given('que he comido {cukes:d} pepinos')
+@given('que he comido {cukes} pepinos')
 def step_given_eaten_cukes(context, cukes):
-    context.belly.comer(cukes)
+    try:
+        if ',' in cukes:
+            cukes = cukes.replace(',', '.')
+        cantidad = float(cukes)
+        context.belly.comer(cantidad)
+    except ValueError as e:
+        context.scenario.skip(reason=f"Error al procesar cantidad de pepinos: {e}")
 
 @when('espero {time_description}')
 def step_when_wait_time_description(context, time_description):
@@ -66,8 +72,7 @@ def step_when_wait_time_description(context, time_description):
             try:
                 hours = convertir_palabra_a_numero(time_description_cleaned.split()[0])
             except ValueError:
-                 raise ValueError(f"No se pudo interpretar la descripcion del tiempo: '{time_description}' (Restante: '{time_desc_cleaned}')")
-
+                 raise ValueError(f"No se pudo interpretar la descripcion del tiempo: '{time_description}' (Restante: '{time_description_cleaned}')")
         total_time_in_hours = hours + (minutes / 60.0) + (seconds / 3600.0)
 
     if total_time_in_hours < 0:

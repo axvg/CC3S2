@@ -36,3 +36,13 @@ Característica: Característica del estómago
     Dado que he comido 20 pepinos
     Cuando espero "5400 segundos"
     Entonces mi estómago debería gruñir
+
+  Escenario: Comer una cantidad fraccionaria de pepinos
+    Dado que he comido 0.5 pepinos
+    Cuando espero 2 horas
+    Entonces mi estómago no debería gruñir
+
+  Escenario: Comer una cantidad fraccionaria mayor que el umbral
+    Dado que he comido 10.5 pepinos
+    Cuando espero 1.5 horas
+    Entonces mi estómago debería gruñir
