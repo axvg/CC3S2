@@ -506,6 +506,14 @@ Escenario: Manejar una cantidad no válida de pepinos
   Entonces debería ocurrir un error de cantidad negativa.
 ```
 
+Para esto igual al ejercicio anterior se cambio agrego un tag para behave y se modifico el metod comer:
+
+- Se modifico el metodo belly.py en Belly para validar el rango de pepinos
+- Se actualizo el metodo belly_steps.py para manejar errores
+- Se implemento un nuevo paso belly_steps.py para verificar excepciones
+- Se crearon escenarios de prueba en Gherkin con etiqueta @validacion
+
+![50](img/50.png)
 
 #### Ejercicio 6: **Escalabilidad con grandes cantidades de pepinos**
 

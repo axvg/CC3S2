@@ -94,8 +94,9 @@ def step_given_eaten_cukes(context, cukes):
             cukes = cukes.replace(",", ".")
         cantidad = float(cukes)
         context.belly.comer(cantidad)
-    except ValueError as e:
-        context.scenario.skip(reason=f"Error al procesar cantidad de pepinos: {e}")
+        context.error = None
+    except ValueError as err:
+        context.error = str(err)
 
 
 @when("espero {time_description}")
@@ -166,3 +167,19 @@ def step_then_belly_should_not_growl(context):
     assert (
         not context.belly.esta_gruñendo()
     ), "Se esperaba que el estómago no gruñera, pero lo hizo."
+
+
+@then("debería ocurrir un error de cantidad {tipo_error}")
+def step_then_should_raise_error(context, tipo_error):
+    assert context.error is not None, "Se esperaba un error, pero no ocurrio ninguno"
+
+    if tipo_error == "negativa":
+        assert (
+            "cantidades negativas" in context.error
+        ), f"Error incorrecto: {context.error}"
+    elif tipo_error == "excesiva":
+        assert (
+            "más de 100 pepinos" in context.error
+        ), f"Error incorrecto: {context.error}"
+    else:
+        assert False, f"Tipo de error desconocido: {tipo_error}"

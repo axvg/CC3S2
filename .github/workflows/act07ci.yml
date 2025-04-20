@@ -49,6 +49,13 @@ jobs:
         behave --tags=random --junit --junit-directory test-results/random/
       continue-on-error: true
 
+    - name: Run validation tests
+      working-directory: ./actividades/07/belly_project
+      run: |
+        mkdir -p test-results/validation
+        behave --tags=validacion --junit --junit-directory test-results/validation/
+      continue-on-error: true
+
     - name: Run pytest unit tests
       working-directory: ./actividades/07/belly_project
       run: |

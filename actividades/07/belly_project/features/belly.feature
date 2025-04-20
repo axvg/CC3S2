@@ -85,3 +85,13 @@ Característica: Característica del estómago
     Dado que he comido 25 pepinos
     Cuando espero "between 1 and 3 hours"
     Entonces mi estómago debería gruñir
+
+  @validacion
+  Escenario: Manejar una cantidad negativa de pepinos
+    Dado que he comido -5 pepinos
+    Entonces debería ocurrir un error de cantidad negativa
+
+  @validacion
+  Escenario: Manejar una cantidad excesiva de pepinos
+    Dado que he comido 150 pepinos
+    Entonces debería ocurrir un error de cantidad excesiva
