@@ -28,11 +28,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run behave tests
+    - name: Run all behave tests
       working-directory: ./actividades/07/belly_project
       run: |
         mkdir -p test-results
         behave --junit --junit-directory test-results/
+      continue-on-error: true
+
+    - name: Run English language tests
+      working-directory: ./actividades/07/belly_project
+      run: |
+        mkdir -p test-results/english
+        behave --tags=english --junit --junit-directory test-results/english/
       continue-on-error: true
 
     - name: Run pytest unit tests

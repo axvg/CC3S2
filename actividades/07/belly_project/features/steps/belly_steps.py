@@ -6,7 +6,7 @@ def convertir_palabra_a_numero(palabra):
     try:
         return float(palabra) if '.' in palabra else int(palabra)
     except ValueError:
-        numeros = {
+        numeros_es = {
             "cero": 0, "uno": 1, "una":1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5,
             "seis": 6, "siete": 7, "ocho": 8, "nueve": 9, "diez": 10, "once": 11,
             "doce": 12, "trece": 13, "catorce": 14, "quince": 15, "dieciséis": 16,
@@ -14,7 +14,21 @@ def convertir_palabra_a_numero(palabra):
             "treinta": 30, "cuarenta":40, "cincuenta":50, "sesenta":60, "setenta":70,
             "ochenta":80, "noventa":90, "media": 0.5
         }
-        return numeros.get(palabra.lower(), 0)
+
+        numeros_en = {
+            "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+            "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
+            "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16,
+            "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
+            "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70,
+            "eighty": 80, "ninety": 90, "half": 0.5
+        }
+
+        # Intenta primero en español luego en ingles
+        valor = numeros_es.get(palabra.lower(), None)
+        if valor is None:
+            valor = numeros_en.get(palabra.lower(), 0)
+        return valor
 
 @given('que he comido {cukes} pepinos')
 def step_given_eaten_cukes(context, cukes):
@@ -29,56 +43,34 @@ def step_given_eaten_cukes(context, cukes):
 @when('espero {time_description}')
 def step_when_wait_time_description(context, time_description):
     time_description = time_description.strip('"').lower()
-    time_description = re.sub(r'\s+y\s+|\s*,\s*', ' ', time_description)
-    time_description = time_description.strip()
 
-    total_time_in_hours = 0
-
-    if time_description == 'media hora':
+    if time_description in ["media hora", "half an hour", "half hour"]:
         total_time_in_hours = 0.5
     else:
+        time_description = re.sub(r'\s+and\s+|\s+y\s+|\s*,\s*', ' ', time_description)
+        time_description = time_description.strip()
+
         hours = 0
         minutes = 0
         seconds = 0
 
-        match_h = re.search(r'(\d+|\w+)\s*(?:horas?|h)', time_description)
+        match_h = re.search(r'(\d+|\w+)\s*(?:horas?|hours?|h)', time_description)
         if match_h:
-            try:
-                hours = convertir_palabra_a_numero(match_h.group(1))
-                time_description = time_description.replace(match_h.group(0), '', 1).strip()
-            except ValueError as e:
-                print(f"Error al interpretar horas: {e}")
+            hours = convertir_palabra_a_numero(match_h.group(1))
+            time_description = time_description.replace(match_h.group(0), '', 1).strip()
 
-
-        match_m = re.search(r'(\d+|\w+)\s*(?:minutos?|m)', time_description)
+        match_m = re.search(r'(\d+|\w+)\s*(?:minutos?|minutes?|min|m)', time_description)
         if match_m:
-            try:
-                minutes = convertir_palabra_a_numero(match_m.group(1))
-                time_description = time_description.replace(match_m.group(0), '', 1).strip()
-            except ValueError as e:
-                print(f"Error al interpretar minutos: {e}")
+            minutes = convertir_palabra_a_numero(match_m.group(1))
+            time_description = time_description.replace(match_m.group(0), '', 1).strip()
 
-
-        match_s = re.search(r'(\d+|\w+)\s*(?:segundos?|s)', time_description)
+        match_s = re.search(r'(\d+|\w+)\s*(?:segundos?|seconds?|sec|s)', time_description)
         if match_s:
-            try:
-                seconds = convertir_palabra_a_numero(match_s.group(1))
-                time_description = time_description.replace(match_s.group(0), '', 1).strip()
-            except ValueError as e:
-                 print(f"Error la interpretar segundos: {e}")
+            seconds = convertir_palabra_a_numero(match_s.group(1))
+            time_description = time_description.replace(match_s.group(0), '', 1).strip()
 
-        time_description_cleaned = time_description.replace('y','').replace(',','').strip()
-        if time_description_cleaned and hours == 0 and minutes == 0 and seconds == 0:
-            try:
-                hours = convertir_palabra_a_numero(time_description_cleaned.split()[0])
-            except ValueError:
-                 raise ValueError(f"No se pudo interpretar la descripcion del tiempo: '{time_description}' (Restante: '{time_description_cleaned}')")
         total_time_in_hours = hours + (minutes / 60.0) + (seconds / 3600.0)
 
-    if total_time_in_hours < 0:
-        raise ValueError(f"El tiempo de espera calculado no puede ser negativo: {total_time_in_hours} horas (Input: '{time_description}')")
-
-    # print(f"Esperando {total_time_in_hours} horas (interpretado de '{time_description}')")
     context.belly.esperar(total_time_in_hours)
 
 @then('mi estómago debería gruñir')

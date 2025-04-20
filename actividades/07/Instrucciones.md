@@ -374,10 +374,11 @@ Escenario: Comer pepinos y esperar en minutos y segundos
   Cuando espero "1 hora y 30 minutos y 45 segundos"
   Entonces mi estómago debería gruñir
 ```
+Solucion:
 
 Despues de realizar cambios en `belly_steps.py` y `belly.feature` se obtienen los siguientes tests:
 
-![00](img/00.png)
+![10](img/10.png)
 
 Para esto se usa patterns de regex para obtener horas, minutos y segundos de manera separada. Al inicio se reemplaza los valores para limpiar inputs.
 
@@ -407,6 +408,23 @@ Escenario: Comer una cantidad fraccionaria de pepinos
 - Asegúrate de que la falla (excepción por valor negativo) sea reportada como *falla de build* si ocurre.  
 - Configura notificaciones (por correo/Slack/Teams) si alguna de las pruebas falla.
 
+Solucion:
+
+- Se modifico el metodo step_given_eaten_cukes para aceptar valores flotantes:
+- Se agrego conversion explicita a float
+- Se añadio manejo para entradas que usan coma como separador decimal
+- Se implemento manejo de excepciones para convertir correctamente los valores
+- Se implemento validacion de numeros negativos en belly.py:
+
+- Se agrego comprobacion de valores negativos en el metodo comer
+- La validacion ocurre antes de procesar la cantidad
+
+- Un escenario para probar cantidades fraccionarias pequeñas (0.5) y otro para probar cantidades fraccionarias cercanas al umbral (10.5) junto con pruebas unitarias
+
+![21](img/21.png)
+
+![22](img/22.png)
+
 
 #### Ejercicio 3: **Soporte para idiomas múltiples (Español e Inglés)**
 
@@ -428,6 +446,17 @@ Escenario: Esperar usando horas en inglés
   Entonces mi estómago debería gruñir
 ```
 
+Solucion:
+
+Para este ejercicio, he implementado el soporte para interpretar tiempos en idiomas multiples (español e ingles)
+
+- Se agrego un diccionario para palabras numericas en ingles (numeros_en)
+- Se modifico la funcion convertir_palabra_a_numero para buscar primero en español y luego en ingles
+- Se actualizo la expresion regular para reconocer "hours", "minutes" y "seconds"
+- Se añadio soporte para casos especiales como "half an hour"
+- Se crearon escenarios de prueba etiquetados con @english para validar la funcion
+
+![31](img/31.png)
 
 #### Ejercicio 4: **Manejo de tiempos aleatorios**
 
