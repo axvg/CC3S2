@@ -28,11 +28,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run all behave tests
+    - name: Run spanish behave tests
       working-directory: ./actividades/07/belly_project
       run: |
-        mkdir -p test-results
-        behave --junit --junit-directory test-results/
+        mkdir -p test-results/spanish
+        behave --tags=spanish --junit --junit-directory test-results/spanish/
       continue-on-error: true
 
     - name: Run English language tests
@@ -40,6 +40,13 @@ jobs:
       run: |
         mkdir -p test-results/english
         behave --tags=english --junit --junit-directory test-results/english/
+      continue-on-error: true
+
+    - name: Run random time tests
+      working-directory: ./actividades/07/belly_project
+      run: |
+        mkdir -p test-results/random
+        behave --tags=random --junit --junit-directory test-results/random/
       continue-on-error: true
 
     - name: Run pytest unit tests

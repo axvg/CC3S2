@@ -479,6 +479,14 @@ Escenario: Comer pepinos y esperar un tiempo aleatorio
   Entonces mi estómago debería gruñir
 ```
 
+- Se creo una funcion generar_tiempo_aleatorio que produce un valor decimal aleatorio entre dos limites
+- Se añadio una expresion regular para detectar patrones como "entre X y Y horas" en español e ingles
+- Se establecio una semilla fija (random.seed(99)) para garantizar pruebas deterministas
+- Se implemento conversion a horas para los diferentes tipos de unidades (horas, minutos, segundos)
+
+![40](img/40.png)
+![41](img/41.png)
+
 
 #### Ejercicio 5: **Validación de cantidades no válidas**
 

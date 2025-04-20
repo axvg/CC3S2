@@ -1,6 +1,7 @@
 # src/belly.py
 # from src.clock import get_current_time
 
+
 class Belly:
     def __init__(self):
         self.pepinos_comidos = 0
