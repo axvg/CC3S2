@@ -56,6 +56,15 @@ jobs:
         behave --tags=validacion --junit --junit-directory test-results/validation/
       continue-on-error: true
 
+    - name: Run stress tests
+      working-directory: ./actividades/07/belly_project
+      run: |
+        mkdir -p test-results/stress
+        { time behave --tags=estres --junit --junit-directory test-results/stress/; } 2>&1 | tee stress-performance.txt
+        echo "Performance results:" >> test-results/performance-report.txt
+        cat stress-performance.txt >> test-results/performance-report.txt
+      continue-on-error: true
+
     - name: Run pytest unit tests
       working-directory: ./actividades/07/belly_project
       run: |

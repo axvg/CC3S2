@@ -93,7 +93,10 @@ def step_given_eaten_cukes(context, cukes):
         if "," in cukes:
             cukes = cukes.replace(",", ".")
         cantidad = float(cukes)
-        context.belly.comer(cantidad)
+
+        is_estres = "estres" in context.tags
+
+        context.belly.comer(cantidad, modo_estres=is_estres)
         context.error = None
     except ValueError as err:
         context.error = str(err)
