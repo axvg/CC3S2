@@ -536,6 +536,13 @@ Escenario: Comer 1000 pepinos y esperar 10 horas
   Entonces mi estómago debería gruñir
 ```
 
+Para esto se realizaron los siguientes:
+- Se modifico el metodo step_given_eaten_cukes en belly_steps para agregar "estres" en tags
+- Se actualizo el pipeline para obtener los tiempos de este caso
+- Se creo el escenario de prueba en Gherkin con etiqueta @estres
+
+![60](img/60.png)
+
 
 #### Ejercicio 7: **Descripciones de tiempo complejas**
 
@@ -556,6 +563,11 @@ Escenario: Manejar tiempos complejos
   Cuando espero "1 hora, 30 minutos y 45 segundos"
   Entonces mi estómago debería gruñir
 ```
+
+- Se actualizo el pattern para obtener horas, minutos y segundos en ambos idiomas (usando "y" o "and" por ejemplo)
+- Se agregaron 2 escenarios en belly.feature.
+
+![70](img/70.png)
 
 #### Ejercicio 8: **De TDD a BDD – Convertir requisitos técnicos a pruebas en Gherkin**
 
@@ -586,6 +598,14 @@ Escenario: Comer muchos pepinos y esperar el tiempo suficiente
   Entonces mi estómago debería gruñir
 ```
 
+- Se implemento un test unitario en test_belly.py que valida el comportamiento del estomago con el caso del ejercicio.
+- Se tradujo este comportamiento a un escenario BDD en belly.feature.
+- Se actualizo el pipeline de CI/CD para ejecutar primero pytest y luego behave.
+
+![80](img/80.png)
+![81](img/81.png)
+
+
 #### Ejercicio 9: **Identificación de criterios de aceptación para historias de usuario**
 
 **Objetivo**  
@@ -612,6 +632,12 @@ Escenario: Comer pocos pepinos y no esperar suficiente tiempo
   Cuando espero 1 hora
   Entonces mi estómago no debería gruñir
 ```
+
+- Se agregaron 3 escenarios en belly.feature que cubren casos distintos como se ve en la imagen.
+- Se vinculo estos escenarios con la historia de usuario usando tags.
+
+![90](img/90.png)
+
 
 #### Ejercicio 10: **Escribir pruebas unitarias antes de escenarios BDD**
 
@@ -640,6 +666,14 @@ Escenario: Saber cuántos pepinos he comido
   Dado que he comido 15 pepinos
   Entonces debería haber comido 15 pepinos
 ```
+
+- Se creo el test unitario en test_belly.py para esta funcion (TDD).
+- Se implemento la nueva funcion pepinos_comidos(), ademas se cambio al propiedad pepinos_comidos a _pepinos_comidos.
+- Igualmente se agregan pasos en belly_steps y un test en belly.feature (BDD)
+
+![100](img/100.png)
+
+![101](img/101.png)
 
 
 #### Ejercicio 11: **Refactorización guiada por TDD y BDD**
@@ -672,6 +706,12 @@ Escenario: Verificar que el estómago gruñe tras comer suficientes pepinos y es
   Entonces mi estómago debería gruñir
 ```
 
+- Se verifica la cobertura de pruebas para la funcion esta_gruñendo().
+- Se refactoriza para las mejorar de eficiencia y legibilidad, agregando variables para lo ultimo.
+- Se agregan 5 casos para test unitarios de este metodo.
+
+![110](img/110.png)
+![111](img/111.png)
 
 #### Ejercicio 12: **Ciclo completo de TDD a BDD – Añadir nueva funcionalidad**
 
@@ -702,6 +742,15 @@ Escenario: Predecir si mi estómago gruñirá tras comer y esperar
   Entonces mi estómago debería gruñir
 ```
 
+Para este ejercicio se agregara la funcion predecir_gruñido que tendra como argumento un tiempo adicional
+
+
+![120](img/120.png)
+
+- Se agregaron pasos en belly_steps.py para el nuevo escenario BDD.
+
+![121](img/121.png)
+
 
 #### Ejercicio 13: **Añadir criterios de aceptación claros**
 
@@ -722,6 +771,18 @@ Escenario: Ver cuántos pepinos puedo comer antes de que el estómago gruña
   Cuando pregunto cuántos pepinos más puedo comer
   Entonces debería decirme que puedo comer 2 pepinos más
 ```
+
+La historia de usuario para este ejercicio sera:
+"Como usuario que ha comido pepinos, quiero saber cuantos pepinos mas puedo comer antes de que mi estomago gruña."
+
+- Se agrego un test unitario para el nuevo metodo que se creara pepinos_restantes que nos dara el numero de pepinos que pide el usuario.
+
+![130](img/130.png)
+
+- Se define este metodo en belly.py.
+- Se definieron 3 escenarios BDD en belly.feature con el tag @criterio_nuevo.
+
+![131](img/131.png)
 
 
 #### Ejercicio 14: **Integración con Mocking, Stubs y Fakes (para DevOps)**
@@ -748,6 +809,15 @@ def before_scenario(context, scenario):
     context.belly = Belly(clock_service=fake_clock)
 ```
 
+- Se agrego el metodo get_curren_time de la libreria time para obtener el tiempo actual en segundos
+- Se agrega como servicio a la clase en belly.py, se importa get_current_time por si no se agrega el servicio como en test unitarios anteriores
+- Se realizo mocks y un test unitario usando el servicio
+
+![140](img/140.png)
+
+- Se agrego pasos y modifico environment con el codigo que estaba como ejemplo para el nuevo escenario
+
+![141](img/141.png)
 
 #### Ejercicio 15: **Despliegue y validación continua en un entorno de integración (CI/CD)**
 
@@ -763,6 +833,11 @@ def before_scenario(context, scenario):
 2. **Incluye** verificación de calidad de código (por ejemplo, flake8 o black).
 3. **Al aprobarse** el pipeline, **despliega** (si corresponde) tu aplicación o *script* a un entorno de staging/producción.
 
+
+- Se creo el archivo .github/workflows/act07ci.yml que corre los tests unitarios y pruebas de comportamiento
+- Los reportes se presentan en artifacts despues de correr cada pipeline, ademas estos pueden mostrar el error que ocurre en los tests ya que se usa `continue-on-error: true`
+
+![150](img/150.png)
 
 ---
 

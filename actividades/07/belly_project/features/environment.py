@@ -1,16 +1,7 @@
-from src.belly import Belly
-
-
-def before_scenario(context, scenario):
-    context.belly = Belly()
-
-
-"""
 # features/environment.py
-
-from unittest.mock import MagicMock
 from src.belly import Belly
-import time
+from unittest.mock import MagicMock
+
 
 def before_scenario(context, scenario):
     # Creamos un mock del reloj para poder simular tiempo
@@ -18,7 +9,6 @@ def before_scenario(context, scenario):
     # Valor inicial del reloj
     initial_time = 10000.0
     fake_clock.return_value = initial_time
-    
     context.current_time = initial_time
 
     def advance_time(hours):
@@ -32,8 +22,7 @@ def before_scenario(context, scenario):
     context.belly = Belly(clock_service=fake_clock)
     context.exception = None
 
+
 def after_scenario(context, scenario):
     # Limpieza al final del escenario
     pass
-
-"""

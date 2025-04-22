@@ -95,3 +95,82 @@ Característica: Característica del estómago
   Escenario: Manejar una cantidad excesiva de pepinos
     Dado que he comido 150 pepinos
     Entonces debería ocurrir un error de cantidad excesiva
+
+  @estres
+  Escenario: Comer 1000 pepinos y esperar 10 horas
+    Dado que he comido 1000 pepinos
+    Cuando espero 10 horas
+    Entonces mi estómago debería gruñir
+
+  Escenario: Manejar tiempos complejos esp
+    Dado que he comido 50 pepinos
+    Cuando espero "1 hora, 30 minutos y 45 segundos"
+    Entonces mi estómago debería gruñir
+
+  Escenario: Manejar tiempos complejos eng
+    Dado que he comido 100 pepinos
+    Cuando espero "2 hours, 10 minutes and 59 seconds"
+    Entonces mi estómago debería gruñir
+
+  Escenario: Comer muchos pepinos y esperar el tiempo suficiente
+    Dado que he comido 15 pepinos
+    Cuando espero 2 horas
+    Entonces mi estómago debería gruñir
+
+  @historia-usuario
+  Escenario: Comer suficientes pepinos y esperar el tiempo adecuado
+    Dado que he comido 20 pepinos
+    Cuando espero 2 horas
+    Entonces mi estómago debería gruñir
+
+  @historia-usuario
+  Escenario: Comer pocos pepinos y no esperar suficiente tiempo
+    Dado que he comido 5 pepinos
+    Cuando espero 1 hora
+    Entonces mi estómago no debería gruñir
+
+  @historia-usuario
+  Escenario: Comer justo en el limite de pepinos y esperar el tiempo minimo
+    Dado que he comido 11 pepinos
+    Cuando espero 1.5 horas
+    Entonces mi estómago debería gruñir
+
+  Escenario: Saber cuantos pepinos puedo comer antes de gruñir
+    Dado que he comido 8 pepinos
+    Cuando pregunto cuantos pepinos mas puedo comer
+    Entonces me dice que puedo comer 2 pepinos mas
+
+  Escenario: Verificar que el estómago gruñe tras comer suficientes pepinos y esperar
+    Dado que he comido 20 pepinos
+    Cuando espero 2 horas
+    Entonces mi estómago debería gruñir
+
+  Escenario: Predecir si mi estomago gruñira en el futuro
+    Dado que he comido 8 pepinos
+    Y he esperado 0.5 horas
+    Cuando pregunto si mi estomago gruñira si espero 1.0 hora mas
+    Entonces deberia recibir una prediccion de que no gruñira
+
+  @criterio_nuevo
+  Escenario: Ver cuantos pepinos puedo comer cuando no he comido ninguno
+    Dado que he comido 0 pepinos
+    Cuando pregunto cuantos pepinos mas puedo comer
+    Entonces me dice que puedo comer 10 pepinos mas
+
+  @criterio_nuevo
+  Escenario: Ver cuantos pepinos puedo comer cuando ya he comido algunos
+    Dado que he comido 8 pepinos
+    Cuando pregunto cuantos pepinos mas puedo comer
+    Entonces me dice que puedo comer 2 pepinos mas
+
+  @criterio_nuevo
+  Escenario: Ver cuantos pepinos puedo comer cuando estoy justo en el límite
+    Dado que he comido 10 pepinos
+    Cuando pregunto cuantos pepinos mas puedo comer
+    Entonces me dice que puedo comer 0 pepinos mas
+
+  @mock_clock
+  Escenario: Medir tiempo transcurrido con reloj simulado
+    Dado que el reloj inicial marca 10000
+    Cuando el reloj avanza a 12800
+    Entonces el tiempo transcurrido debería ser 46.67 minutos

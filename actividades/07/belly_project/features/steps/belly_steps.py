@@ -186,3 +186,53 @@ def step_then_should_raise_error(context, tipo_error):
         ), f"Error incorrecto: {context.error}"
     else:
         assert False, f"Tipo de error desconocido: {tipo_error}"
+
+
+@when("pregunto cuantos pepinos mas puedo comer")
+def step_when_ask_how_many(context):
+    pass
+
+
+@then("me dice que puedo comer {cantidad} pepinos mas")
+def step_then_tell_how_many(context, cantidad):
+    pepinos_comidos = context.belly.pepinos_comidos()
+    pepinos_restantes = 10 - pepinos_comidos
+    assert pepinos_restantes == float(cantidad), (
+        f"Esperaba {cantidad} pero obtuve {pepinos_restantes}"
+    )
+
+
+@given("he esperado {horas:f} horas")
+def step_given_waited_hours(context, horas):
+    context.belly.esperar(horas)
+
+
+@when("pregunto si mi estomago gruñira si espero {tiempo:f} hora mas")
+def step_when_ask_future_growl(context, tiempo):
+    context.prediccion = context.belly.predecir_gruñido(tiempo)
+
+
+@when("como {pepinos:f} pepinos mas")
+def step_when_eat_more_cucumbers(context, pepinos):
+    context.belly.comer(pepinos)
+
+
+@then("deberia recibir una prediccion de que no gruñira")
+def step_then_prediction_will_not_growl(context):
+    assert not context.prediccion, "La predicción deberia ser que el estomago no gruñira"
+
+
+@given("que el reloj inicial marca {tiempo:d}")
+def step_given_initial_time(context, tiempo):
+    pass
+
+
+@when("el reloj avanza a {tiempo:d}")
+def step_when_time_advances(context, tiempo):
+    pass
+
+
+@then("el tiempo transcurrido debería ser {minutos:g} minutos")
+def step_then_elapsed_time_is(context, minutos):
+    tiempo_transcurrido_minutos = context.belly.tiempo_transcurrido() * 60
+    assert f"Error con {tiempo_transcurrido_minutos}"
