@@ -18,9 +18,6 @@
      git commit -m "Commit inicial en main"
      ```
 
-![00](img/00.png)
-
-
    - Crea y cambia a la rama new-feature:
      ```bash
      $ git checkout -b new-feature
@@ -33,6 +30,8 @@
 
 ![01](img/01.png)
 
+Aqui se puede ver la rama `master` con el primer commit. Se creo la rama `new-feature` saliendo de ese commit. Luego se agrego un nuevo commit en `new-feature`, moviendo `new-feature` y `HEAD` a ese commit.
+
    Ahora, digamos que se han agregado nuevos commits a main mientras trabajabas en new-feature:
 
    ```bash
@@ -43,9 +42,9 @@
    git commit -m "Update main"
    ```
 
-![02](img/02.png)
-
    Tu gráfico de commits ahora diverge (comprueba esto)
+
+Despues de crear un nuevo commit en `master`, ahora las ramas se separaron. `master` avanzo con un commit nuevo mientras `new-feature` quedo con su propio commit, se ve que HEAD apunta a `master`.
 
    > **Tarea**: Realiza el rebase de `new-feature` sobre `main` con los siguientes comandos:
    ```bash
@@ -62,6 +61,8 @@
 
 ![03](img/05.png)
 
+Despues de aplicar el `rebase`, el historial se ve como una linea recta. El commit que estaba en `new-feature` ahora aparece arriba del ultimo commit que estaba en `master`, y se nota que su hash es diferente. `new-feature` y `HEAD` apuntan al commit que se reescribio.
+
 4. **Momento de fusionar y completar el proceso de git rebase:**
    ```bash
    # Cambiar a 'main' y realizar una fusión fast-forward
@@ -75,6 +76,7 @@ El commit de `new-feature` esta arriba del ultimo commit de `master` a pesar de 
 
 Algo importante aqui es que el hash del ultimo commit de `new-feature` (como se ve en las figuras) cambio, esto debido a que este commit tiene un padre diferente (el nodo cambio de arista en la DAG)
 
+---
 
 #### Parte 2: **git cherry-pick para la integración selectiva de commit**
 
@@ -113,11 +115,13 @@ Algo importante aqui es que el hash del ultimo commit de `new-feature` (como se 
 
 ![10](img/10.png)
 
+Este diagrama muestra el estado de las ramas. La rama `master` esta en el commit inicial y de ahi salen dos commits seguidos en la rama `add-base-documents`. `HEAD` esta en el ultimo commit de `add-base-documents`.
+
 
 4. **Tarea: Haz cherry-pick de un commit de add-base-documents a main:**
    ```bash
    $ git checkout main
-   $ git cherry-pick a80e8ad  # Reemplaza con el hash real del commit de tu log
+   $ git cherry-pick 54a3722
    ```
 
 
@@ -225,8 +229,6 @@ El equipo identificaria los hashes  de esos commits especificos y desde la rama 
    $ git merge feature --ff-only
    ```
 
-![20](img/20.png)
-
    **Preguntas:**
 
    > - ¿Qué sucede con el historial de commits después del rebase?
@@ -320,7 +322,6 @@ $ git checkout -b feature-user-story-2
 
 Porque permite trabajar en una funcionalidad o historia de usuario por cada rama aislando los cambios. Cada desarrollador puede trabajar en su tarea sin afectar directamente el trabajo de los demas. Si algo sale mal en una rama no bloquea al resto del equipo. Tambien facilita la revision de codigo especifica para esa funcionalidad. Permite integrar caracteristicas completas de forma controlada al final del sprint o cuando esten listas en lugar de tener cambios mezclados constantemente en la rama master. Ayuda a mantener la rama master mas estable.
 
-![22](img/22.png)
 
 #### **Fase 2: Desarrollo del sprint (sprint execution)**
 
@@ -386,7 +387,6 @@ $ git cherry-pick <hash_del_commit_de_feature-lista>
 
 `cherry-pick` ayuda en un sprint review porque permite tomar solo los commits especificos de una feature branch que representan funcionalidades terminadas y listas para mostrar. Se puede aplicar estos commits seleccionados a la rama `master` o a una rama temporal de demostracion sin necesidad de fusionar toda la `feature` branch que podria contener trabajo incompleto o inestable. Con esto nos aseguramos que lo que se muestra a los stakeholders durante la revision del sprint sea funcional y represente incremento de valor completado sin exponer codigo incompleto y con errores. Esto nos da flexibilidad para presentar avances concretos aunque la historia de usuario completa no este cerrada.
 
-![23](img/23.png)
 
 #### **Fase 4: Retrospectiva del sprint (sprint retrospective)**
 
@@ -418,9 +418,10 @@ $ git checkout main
 $ git merge feature-user-story-1
 $ git merge feature-user-story-2
 ```
-![24](img/24.png)
 
 ![25](img/25.png)
+
+Se notan las ramas de `feature` y la rama `master` que tiene ambos commits de las fusiones de ambas ramas (junto con sus commits) ya que se realizo dos merges tipos `--no-ff`
 
 > **Pregunta**: ¿Cómo manejas los conflictos de fusión al final de un sprint? ¿Cómo puede el equipo mejorar la comunicación para evitar conflictos grandes?
 
@@ -461,7 +462,7 @@ $ git add feature1.md
 $ git commit -m "Cambios importantes en feature 1"
 $ git push origin feature-user-story-1
 ```
-![26](img/26.png)
+
 
 > **Pregunta**: ¿Qué ventajas y desventajas observas al automatizar el rebase en un entorno de CI/CD?
 
@@ -664,8 +665,6 @@ En este repositorio se prepara un conflicto de fusion. Esta situacion es comun e
      $ git checkout --ours <archivo>    # Si decides aceptar los cambios de main
      ```
 
-![28](img/28.png)
-
 
    - **Paso 3**: Una vez resueltos los conflictos, commitea los archivos y termina la fusión
      ```bash
@@ -726,7 +725,7 @@ El directorio quedo en estado conflictivo permitiendo inspeccionar el resultado.
 
 ![33](img/33.png)
 
-Resolviendo el conflicto
+Resolviendo el conflicto mantenido ambos cambios
 
 ![34](img/34.png)
 
