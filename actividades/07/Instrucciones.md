@@ -376,11 +376,43 @@ Escenario: Comer pepinos y esperar en minutos y segundos
 ```
 Solucion:
 
-Despues de realizar cambios en `belly_steps.py` y `belly.feature` se obtienen los siguientes tests:
+Despues de realizar cambios en `belly_steps.py` 
+
+- Se quitan los espacios con `strip` y se pasa a minusculas para procesar luego con regex:
+
+- Se usa el patron de regex que permite obtener las palabras de union como `y`:
+
+https://github.com/axvg/CC3S2/blob/21226d8175f9ba9ae0922bbca143b224ca089246/actividades/07/belly_project/features/steps/belly_steps.py#L25-L26
+
+
+- Y los digitos en la medidas de tiempo como `horas` en grupos.
+
+https://github.com/axvg/CC3S2/blob/21226d8175f9ba9ae0922bbca143b224ca089246/actividades/07/belly_project/features/steps/belly_steps.py#L38
+
+- `minutos`
+
+https://github.com/axvg/CC3S2/blob/21226d8175f9ba9ae0922bbca143b224ca089246/actividades/07/belly_project/features/steps/belly_steps.py#L47
+
+- `segundos`
+
+https://github.com/axvg/CC3S2/blob/21226d8175f9ba9ae0922bbca143b224ca089246/actividades/07/belly_project/features/steps/belly_steps.py#L56
+
+y el escenario en `belly.feature`:
+
+https://github.com/axvg/CC3S2/blob/72ab77a1b44caed885284f91e9f4df383cbd68da/actividades/07/belly_project/features/belly.feature#L35-L39
+
+
+- Finalmente se suma los tiempos obtenidos (esto es importante para el caso de 5400 segundos porque se transforma a horas que es lo que la clase usa como tiempo)
+
+https://github.com/axvg/CC3S2/blob/21226d8175f9ba9ae0922bbca143b224ca089246/actividades/07/belly_project/features/steps/belly_steps.py#L71
+
+Este es el escenario descrito en el ejercicio.
+
+Se obtienen los siguientes tests:
 
 ![10](img/10.png)
 
-Para esto se usa patterns de regex para obtener horas, minutos y segundos de manera separada. Al inicio se reemplaza los valores para limpiar inputs.
+Esto demuestra el correcto uso de patrones de regex para obtener horas, minutos y segundos de manera separada. Al inicio se reemplaza los valores para limpiar inputs.
 
 
 #### Ejercicio 2: **Manejo de cantidades fraccionarias de pepinos**
@@ -414,14 +446,26 @@ Solucion:
 - Se agrego conversion explicita a float
 - Se añadio manejo para entradas que usan coma como separador decimal
 - Se implemento manejo de excepciones para convertir correctamente los valores
-- Se implemento validacion de numeros negativos en belly.py:
+
+https://github.com/axvg/CC3S2/blob/b33fc77885261e2d0176c330230df7820a7a8115/actividades/07/belly_project/features/steps/belly_steps.py#L22-L24
+
+Aca se tomaron en cuenta los casos de `1.2` y `1,2` que habrian en los escenarios de belly.feature.
 
 - Se agrego comprobacion de valores negativos en el metodo comer
 - La validacion ocurre antes de procesar la cantidad
 
-- Un escenario para probar cantidades fraccionarias pequeñas (0.5) y otro para probar cantidades fraccionarias cercanas al umbral (10.5) junto con pruebas unitarias
+https://github.com/axvg/CC3S2/blob/b33fc77885261e2d0176c330230df7820a7a8115/actividades/07/belly_project/src/belly.py#L14-L15
 
-![21](img/21.png)
+
+- Se agregaron valores en el diccionario de numeros para manejar las pruebas de este ejercicio:
+
+https://github.com/axvg/CC3S2/blob/b33fc77885261e2d0176c330230df7820a7a8115/actividades/07/belly_project/features/steps/belly_steps.py#L15
+
+- Y se agrego este caso especial donde se tiene `media hora` de manera especifica:
+
+https://github.com/axvg/CC3S2/blob/b33fc77885261e2d0176c330230df7820a7a8115/actividades/07/belly_project/features/steps/belly_steps.py#L37-L38
+
+- Se agregaron escenarios para probar cantidades fraccionarias pequeñas (0.5) y otro para probar cantidades fraccionarias cercanas al umbral (10.5) junto con pruebas unitarias
 
 ![22](img/22.png)
 
@@ -451,10 +495,34 @@ Solucion:
 Para este ejercicio, he implementado el soporte para interpretar tiempos en idiomas multiples (español e ingles)
 
 - Se agrego un diccionario para palabras numericas en ingles (numeros_en)
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L18-L25
+
 - Se modifico la funcion convertir_palabra_a_numero para buscar primero en español y luego en ingles
-- Se actualizo la expresion regular para reconocer "hours", "minutes" y "seconds"
-- Se añadio soporte para casos especiales como "half an hour"
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L28-L31
+
+
+- Se actualizo la expresion regular para reconocer "hours", "minutes", "seconds" y "and":
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L50
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L57
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L62
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L67
+
+- En relacion al ejercio anterior, se añadio soporte para casos especiales como "half an hour":
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/steps/belly_steps.py#L47-L48
+
 - Se crearon escenarios de prueba etiquetados con @english para validar la funcion
+
+https://github.com/axvg/CC3S2/blob/91f05a7e9b7440bcd2a59ae5afb758b7b38ae2ee/actividades/07/belly_project/features/belly.feature#L50-L60
+
+
+Estos escenarias quedan correctos con los nuevos cambios de regex y metodo en belly_steps.py.
 
 ![31](img/31.png)
 
