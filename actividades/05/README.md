@@ -26,10 +26,6 @@ git add README.md
 git commit -m "Agregar descripción al README.md"
 ```
 
-![01](img/01.png)
-
-![02](img/02.png)
-
 **Pregunta:** Muestra la estructura de commits resultante.
 
 ```bash
@@ -41,9 +37,11 @@ git merge add-description
 git log --graph --oneline
 ```
 
-**Resultado:** El historial de tu repositorio.
+> **Resultado:** El historial de tu repositorio.
 
 ![03](img/03.png)
+
+Despues de esto cambios, se muestra una historia lineal de commits debido  al tipo de merge que se uso (--ff por defecto)
 
 #### 2. Fusión No-fast-forward (git merge --no-ff)
 
@@ -70,12 +68,12 @@ echo "Implementando una nueva característica..." >> README.md
 git add README.md
 git commit -m "Implementar nueva característica"
 ```
-![10](img/10.png)
-
-![11](img/11.png)
-
 
 **Pregunta:** Muestra el log de commits resultante.
+
+![12](img/12.png)
+
+Se muestran dos commits en linea recta, esto debido a que aun no hay un merge y solo commits en la rama master.
 
 ```bash
 # Cambiar de vuelta a la rama 'main' y realizar una fusión no-fast-forward
@@ -90,10 +88,11 @@ Después de la edición, veamos el log ahora:
 git log --graph --oneline
 ```
 
-El historial de tu repositorio mostrará un commit de fusión.
+> El historial de tu repositorio mostrará un commit de fusión.
 
-![12](img/12.png)
+![13](img/13.png)
 
+Este commit mostrado es debido al tipo de merge que usamos (--no-ff), donde se agrego un commit de fusion con un mensaje por defecto
 
 ##### 3. Fusión squash (git merge --squash)
 
@@ -125,17 +124,10 @@ $ git add LICENSE.txt
 $ git commit -m "Agregar LICENSE.txt"
 ```
 
-![30](img/30.png)
 
-![31](img/31.png)
+> **Pregunta:** ¿Cuál es tu estructura de commits?
 
-![32](img/32.png)
-
-
-**Pregunta:** ¿Cuál es tu estructura de commits?
-
-
-Se tiene 2 commits distintos en la rama `add-basic-files`
+Se tiene 2 commits distintos en la rama `add-basic-files`, esto debido a los commits a los archivos md y txt
 
 
 ```bash
@@ -143,7 +135,6 @@ Se tiene 2 commits distintos en la rama `add-basic-files`
 $ git checkout master
 $ git merge --squash add-basic-files
 ```
-![33](img/33.png)
 
 Los commits luego se aplastan y se convierten en un solo commit:
 
@@ -158,6 +149,8 @@ $ git log --graph --oneline
 Esto combinará todos los cambios de la rama add-multiple-features en un solo nuevo commit en la rama main.
 
 ![34](img/34.png)
+
+Antes del merge se tenian dos commits individuales en la rama de feature. Luego de aplicar squash, ambos se combinan en un solo commit que aparece al final de la rama principal.
 
 ---
 
@@ -203,17 +196,12 @@ En algunos casos, las fusiones no son tan sencillas y pueden surgir conflictos q
    cd prueba-merge-conflict
    git init
    ```
-
-![50](img/50.png)
-
 2. Crea un archivo index.html y realiza un commit en la rama main:
    ```bash
    echo "<html><body><h1>Proyecto inicial CC3S2</h1></body></html>" > index.html
    git add index.html
    git commit -m "commit inicial del  index.html en main"
    ```
-
-![51](img/51.png)
 
 3. Crea y cambia a una nueva rama feature-update:
    ```bash
@@ -235,14 +223,10 @@ En algunos casos, las fusiones no son tan sencillas y pueden surgir conflictos q
    git commit -m "....index.html"
    ```
 
-![53](img/53.png)
-
 6. Fusiona la rama feature-update con --no-ff y observa el conflicto:
    ```bash
    git merge --no-ff feature-update
    ```
-![54](img/54.png)
-
 
 7. Git detectará un conflicto en index.html. Abre el archivo y resuelve el conflicto. Elimina las líneas de conflicto generadas por Git (`<<<<<<<`, `=======`, `>>>>>>>`) y crea la versión final del archivo con ambos cambios:
 
@@ -260,20 +244,19 @@ En algunos casos, las fusiones no son tan sencillas y pueden surgir conflictos q
 
 ![56](img/56.png)
 
+Estos son los cambios que se muestran al revisar el merge conflict, los dos marcadores <<< y >>> muestran los cambios y lineas que generan este conflicto, para solucionarlo se edita el archivo con ambos cambios.
+
+
 8. Agrega el archivo corregido y completa la fusión:
    ```bash
    git add index.html
    git commit
    ```
 
-![57](img/57.png)
-
 9. Verifica el historial para confirmar la fusión y el commit de resolución de conflicto:
    ```bash
    git log --graph --oneline
    ```
-
-![58](img/58.png)
 
 **Preguntas:**
 > - ¿Qué pasos adicionales tuviste que tomar para resolver el conflicto?
@@ -311,8 +294,6 @@ Este ejercicio te permitirá observar las diferencias en el historial generado p
    git commit -m "Se agrega caracteristica 2"
    ```
 
-![60](img/60.png)
-
 2. Fusiona feature-1 usando fast-forward:
    ```bash
    git checkout main
@@ -323,8 +304,6 @@ Este ejercicio te permitirá observar las diferencias en el historial generado p
    ```bash
    git merge feature-2 --no-ff
    ```
-
-![61](img/61.png)
 
 4. Realiza una nueva rama feature-3 con múltiples commits y fusiónala con squash:
    ```bash
@@ -340,15 +319,15 @@ Este ejercicio te permitirá observar las diferencias en el historial generado p
    git commit -m "Agregar caracteristica 3 en un commit"
    ```
 
-![62](img/62.png)
-
 5. Compara el historial de Git:
    - Historial Fast-forward:
      ```bash
      git log --graph --oneline --merges --first-parent –branches
      ```
    
-![63](img/63.png)
+![61](img/61.png)
+
+E muestra el unico commit de la rama 
 
    - Historial Non-fast-forward:
      ```bash
@@ -361,6 +340,13 @@ Este ejercicio te permitirá observar las diferencias en el historial generado p
      git log --graph --oneline --merges --decorate --all
      ```
 
+![62](img/62.png)
+
+Este es el log para ver todos los commits de todas las ramas, se puede ver ambos commits de la rama `feature-3` y que en su merge sera solo uno.
+
+![62-5](img/62-5.png)
+
+Se observa los cambios entre los commits realizados para los 3 tipos de merges visto en este ejercicios, mientras que `--no-ff` tiene un commit adicional de fusion, `--ff` tiene un commit lineal, asimismo para el merge `squash` se puede ver el unico commit que combino a sus dos commits.
 
 **Preguntas:**
 > - ¿Cómo se ve el historial en cada tipo de fusión?
@@ -398,8 +384,6 @@ En este ejercicio, aprenderás cómo Git puede fusionar automáticamente cambios
    git commit -m "...linea 2"
    ```
 
-![70](img/70.png)
-
 2. Crea una nueva rama auto-merge y realiza otro commit en file.txt:
    ```bash
    git checkout -b auto-merge
@@ -408,8 +392,6 @@ En este ejercicio, aprenderás cómo Git puede fusionar automáticamente cambios
    git commit -m "... linea 3"
    ```
 
-![71](img/71.png)
-
 3. Vuelve a main y realiza cambios no conflictivos en otra parte del archivo:
    ```bash
    git checkout main
@@ -417,8 +399,6 @@ En este ejercicio, aprenderás cómo Git puede fusionar automáticamente cambios
    git add file.txt
    git commit -m "Add footer al archivo file.txt"
    ```
-
-![72](img/72.png)
 
 4. Fusiona la rama auto-merge con main:
    ```bash
@@ -438,6 +418,8 @@ En este ejercicio, aprenderás cómo Git puede fusionar automáticamente cambios
    git log --graph --oneline
    ```
 ![73](img/73.png)
+
+En la figura se puede ver el merge automatico de la rama `auto-merge`, en el paso 6 se uso `revert` creando quitando los cambios de este merge y el historial de commits siga intacto ya que `revert` crea un nuevo commits sin alterar la historia pasada.
 
 **Preguntas:**
 > - ¿Cuándo usarías un comando como git revert para deshacer una fusión?
@@ -475,15 +457,27 @@ Este ejercicio te permitirá practicar la fusión de ramas en un entorno remoto 
 
    ![80](img/80.png)
 
+Se puede ver el repositorio de github seteado y la rama que se esta subiendo `colaboracion` para realizar el pull request y merge en la pagina de github.
+
 4. Simula una fusión desde la rama colaboracion en la rama main de otro colaborador. (Puedes usar la interfaz de GitHub para crear un Pull Request y realizar la fusión).
+
+El proceso de creacion de una PR hasta realizar la fusion es el siguiente:
 
 ![81](img/81.png)
 
+Al subir una rama al repositorio se obtiene un popup amarillo que nos indica que podemos realizar un PR
+
 ![82](img/82.png)
+
+Al presionar este boton podemos crear un PR, con el titulo de este y comentarios (podria ir un comentario como CHANGELOG).
 
 ![83](img/83.png)
 
+Cuando se crea el PR, se espera la aprobacion para que este pase a la rama principal (en este caso master). Se nota el label `Open`. En este caso se agrego assignees para revisar este PR y hacer una revision de codigo.
+
 ![84](img/84.png)
+
+Finalmnente se aprueba este PR y los cambios pasan a la rama master.
 
 **Preguntas:**
 > - ¿Cómo cambia la estrategia de fusión cuando colaboras con otras personas en un repositorio remoto?
@@ -498,30 +492,29 @@ Podria ocurrir conflictos de fusion debido a modificaciones concurrentes en las 
 
 Configura un proyecto simulado:
 
+Este proyecto esta el repositorio https://github.com/axvg/new-project-test-01 , tiene la siguiente estructura:
+
 ![99](img/99.png)
 
 - Crea un proyecto con tres ramas: main, feature1, y feature2.
 
-![90](img/90.png)
+Las 3 ramas tienen distintos archivos de lenguajes de programacion para mostrar la diferencia
 
 - Realiza varios cambios en feature1 y feature2 y simula colaboraciones paralelas.
 
-![91](img/91.png)
 
 - Realiza fusiones utilizando diferentes métodos:
   - Fusiona feature1 con main utilizando `git merge --ff`.
 
-![92](img/92.png)
   
   - Fusiona feature2 con main utilizando `git merge --no-ff`.
 
-![93](img/93.png)
-
-![94](img/94.png)
 
   - Haz una rama adicional llamada feature3 y aplasta sus commits utilizando `git merge --squash`.
 
-![96](img/96.png)
+![94](img/94.png)
+
+Se observan los dos commits de los dos tipos de merge utilizados y el commit de fusion del merge `--no-ff`.
 
 Analiza el historial de commits:
 
