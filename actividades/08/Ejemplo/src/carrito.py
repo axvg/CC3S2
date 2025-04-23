@@ -1,9 +1,10 @@
 # src/carrito.py
 
 class Producto:
-    def __init__(self, nombre, precio):
+    def __init__(self, nombre, precio, stock):
         self.nombre = nombre
         self.precio = precio
+        self.stock = stock
 
     def __repr__(self):
         return f"Producto({self.nombre}, {self.precio})"
@@ -29,6 +30,9 @@ class Carrito:
         """
         Agrega un producto al carrito. Si el producto ya existe, incrementa la cantidad.
         """
+        if producto.stock < cantidad:
+            raise ValueError(f"No hay suficiente stock ({producto.stock}) para este producto.")
+
         for item in self.items:
             if item.producto.nombre == producto.nombre:
                 item.cantidad += cantidad
@@ -95,3 +99,30 @@ class Carrito:
         Devuelve la lista de items en el carrito.
         """
         return self.items
+
+    def vaciar(self):
+        """
+        Vacia el carrito.
+        """
+        self.items = []
+
+    def aplicar_descuento_condicional(self, porcentaje=15, minimo=500):
+        """
+        Aplica un descuento si el total es mayor que un minimo.
+        Retorna el total descontado o el total original si no se aplica el descuento.
+        """
+        if self.calcular_total() > minimo:
+            return self.aplicar_descuento(porcentaje)
+        return self.calcular_total()
+
+    def obtener_items_ordenados(self, critero: str):
+        """
+        Devuelve la lista de items ordenados por el criterio especificado.
+        Los criterios pueden ser precio o nombre.
+        """
+        if critero == "precio":
+            return sorted(self.items, key=lambda item: item.producto.precio)
+        if critero == "nombre":
+            return sorted(self.items, key=lambda item: item.producto.nombre)
+        else:
+            raise ValueError("Criterio invalido.")
