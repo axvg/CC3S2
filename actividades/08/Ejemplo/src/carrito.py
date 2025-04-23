@@ -26,19 +26,6 @@ class Carrito:
     def __init__(self):
         self.items = []
 
-    def agregar_producto(self, producto, cantidad=1):
-        """
-        Agrega un producto al carrito. Si el producto ya existe, incrementa la cantidad.
-        """
-        if producto.stock < cantidad:
-            raise ValueError(f"No hay suficiente stock ({producto.stock}) para este producto.")
-
-        for item in self.items:
-            if item.producto.nombre == producto.nombre:
-                item.cantidad += cantidad
-                return
-        self.items.append(ItemCarrito(producto, cantidad))
-
     def remover_producto(self, producto, cantidad=1):
         """
         Remueve una cantidad del producto del carrito.
@@ -126,3 +113,71 @@ class Carrito:
             return sorted(self.items, key=lambda item: item.producto.nombre)
         else:
             raise ValueError("Criterio invalido.")
+
+    def calcular_impuestos(self, porcentaje):
+        """
+        Calcula el valor de los impuestos basados en el porcentaje indicado.
+
+        Args:
+            porcentaje (float): Porcentaje de impuesto a aplicar (entre 0 y 100).
+
+        Returns:
+            float: Monto del impuesto.
+
+        Raises:
+            ValueError: Si el porcentaje no está entre 0 y 100.
+        """
+        if porcentaje < 0 or porcentaje > 100:
+            raise ValueError("El porcentaje debe estar entre 0 y 100")
+        total = self.calcular_total()
+        return total * (porcentaje / 100)
+
+    def aplicar_cupon(self, descuento_porcentaje, descuento_maximo):
+        """
+        Aplica un cupón de descuento al total del carrito, asegurando que el descuento no exceda el máximo permitido.
+
+        Args:
+            descuento_porcentaje (float): Porcentaje de descuento a aplicar.
+            descuento_maximo (float): Valor máximo de descuento permitido.
+
+        Returns:
+            float: Total del carrito después de aplicar el cupón.
+
+        Raises:
+            ValueError: Si alguno de los valores es negativo.
+        """
+        if descuento_porcentaje < 0 or descuento_maximo < 0:
+            raise ValueError("Los valores de descuento deben ser positivos")
+
+        total = self.calcular_total()
+        descuento_calculado = total * (descuento_porcentaje / 100)
+        descuento_final = min(descuento_calculado, descuento_maximo)
+        return total - descuento_final
+
+    def _buscar_item(self, producto):
+        for item in self.items:
+            if item.producto.nombre == producto.nombre:
+                return item
+        return None
+
+    def agregar_producto(self, producto, cantidad=1):
+        """
+        Agrega un producto al carrito verificando que la cantidad no exceda el stock disponible.
+
+        Args:
+            producto (Producto): Producto a agregar.
+            cantidad (int): Cantidad a agregar.
+
+        Raises:
+            ValueError: Si la cantidad total excede el stock del producto.
+        """
+        item = self._buscar_item(producto)
+        cantidad_actual = item.cantidad if item else 0
+
+        if cantidad_actual + cantidad > producto.stock:
+            raise ValueError("Cantidad a agregar excede el stock disponible")
+
+        if item:
+            item.cantidad += cantidad
+        else:
+            self.items.append(ItemCarrito(producto, cantidad))

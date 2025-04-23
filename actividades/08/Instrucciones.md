@@ -484,6 +484,8 @@ Implementa en la clase `Carrito` un método llamado `vaciar()` que elimine todos
 - Agrega el método `vaciar` en `src/carrito.py` que realice `self.items = []`.
 - Crea pruebas en `tests/test_carrito.py` que agreguen varios productos, invoquen `vaciar()` y verifiquen que `obtener_items()` retorne una lista vacía y `calcular_total()` retorne 0.
 
+![01](img/01.png)
+
 
 ##### Ejercicio 2: Descuento por compra mínima
 
@@ -495,6 +497,7 @@ Amplía la lógica del carrito para aplicar un descuento solo si el total supera
 - Si se cumple la condición, aplica el descuento; de lo contrario, retorna el total sin descuento.
 - Escribe pruebas para ambos escenarios (condición cumplida y no cumplida).
 
+![02](img/02.png)
 
 ##### Ejercicio 3: Manejo de stock en producto
 
@@ -508,6 +511,8 @@ Modifica la clase `Producto` para que incluya un atributo `stock` (cantidad disp
   - Se puede agregar un producto dentro del límite de stock.
   - Se lanza una excepción al intentar agregar más unidades de las disponibles.
 
+![03](img/03.png)
+
 
 ##### Ejercicio 4: Ordenar items del carrito
 
@@ -519,6 +524,7 @@ Agrega un método en `Carrito` que devuelva la lista de items ordenados por un c
 - Utiliza la función `sorted()` con una función lambda para ordenar según el criterio.
 - Escribe pruebas que verifiquen que, al agregar varios productos, la lista devuelta esté ordenada correctamente según el criterio solicitado.
 
+![04](img/04.png)
 
 ##### Ejercicio 5: Uso de Pytest Fixtures
 
@@ -544,7 +550,11 @@ Refactoriza las pruebas para que utilicen **fixtures** de Pytest, de modo que se
   def producto_generico():
       return ProductoFactory(nombre="Genérico", precio=100.0)
   ```
+
 - Actualiza las pruebas existentes para usar estas fixtures en lugar de instanciar los objetos directamente en cada test.
+- Se agrego conftest.py con 3 fixtures, el ultimo fue usado para un test. Los otros fueron usados junto con factory debido a que se necesitaba comparar valores que se setean en cada test.
+
+![05](img/05.png)
 
 
 ##### Ejercicio 6: Pruebas parametrizadas
@@ -555,6 +565,11 @@ Utiliza la marca `@pytest.mark.parametrize` para crear pruebas que verifiquen m�
 **Pistas:**
 - Por ejemplo, parametriza pruebas para `aplicar_descuento` usando distintos porcentajes y totales esperados.
 - De igual forma, para actualizar cantidades: prueba con diferentes valores (válidos e inválidos) y verifica que se lance la excepción en los casos correspondientes.
+
+![06](img/06.png)
+
+- Se agrega 2 test parametrizados, con un escenario de error (cantidad negativa)
+
 
 
 ##### Ejercicio 7: Calcular impuestos en el carrito
@@ -590,6 +605,9 @@ Implementar un método `calcular_impuestos(porcentaje)` que retorne el valor del
 
    *En este punto, la prueba fallará porque el método `calcular_impuestos` aún no existe.*
 
+![07](img/07.png)
+
+
 ##### Green
 2. **Implementar el código mínimo:**  
    En `src/carrito.py`, añade el método de forma mínima para que la prueba pase:
@@ -601,6 +619,11 @@ Implementar un método `calcular_impuestos(porcentaje)` que retorne el valor del
        total = self.calcular_total()
        return total * (porcentaje / 100)
    ```
+
+- Se agrega este metodo a la clase Carrito
+
+![08](img/08.png)
+
 
 ##### Refactor
 3. **Refactorizar:**  
@@ -626,6 +649,9 @@ Implementar un método `calcular_impuestos(porcentaje)` que retorne el valor del
        total = self.calcular_total()
        return total * (porcentaje / 100)
    ```
+
+![09](img/09.png)
+
 
 ##### Ejercicio 8: Aplicar cupón de descuento con límite máximo
 
@@ -658,6 +684,9 @@ Implementar un método `aplicar_cupon(descuento_porcentaje, descuento_maximo)` q
        assert total_con_cupon == 350.00
    ```
 
+![10](img/10.png)
+
+
 ##### Green
 2. **Implementar el código mínimo:**  
    En `src/carrito.py`, añade un método para aplicar el cupón de descuento de forma básica:
@@ -669,6 +698,7 @@ Implementar un método `aplicar_cupon(descuento_porcentaje, descuento_maximo)` q
        descuento_final = min(descuento_calculado, descuento_maximo)
        return total - descuento_final
    ```
+
 
 ##### Refactor
 3. **Refactorizar:**  
@@ -699,6 +729,8 @@ Implementar un método `aplicar_cupon(descuento_porcentaje, descuento_maximo)` q
        return total - descuento_final
    ```
 
+![11](img/11.png)
+
 
 ##### Ejercicio 9: Validación de stock al agregar productos (RGR)
 
@@ -728,6 +760,8 @@ Asegurarse de que al agregar un producto al carrito, no se exceda la cantidad di
        with pytest.raises(ValueError):
            carrito.agregar_producto(producto, cantidad=6)
    ```
+
+![12](img/12.png)
 
 ##### Green
 2. **Implementar el código mínimo:**  
@@ -786,3 +820,9 @@ Asegurarse de que al agregar un producto al carrito, no se exceda la cantidad di
        else:
            self.items.append(ItemCarrito(producto, cantidad))
    ```
+
+![13](img/13.png)
+
+Finalmente los tests unitarios quedan:
+
+![14](img/14.png)
