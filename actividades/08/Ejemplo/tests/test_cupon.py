@@ -12,7 +12,9 @@ def test_aplicar_cupon_con_limite(carrito):
     carrito.agregar_producto(producto, cantidad=2)  # Total = 400
 
     # Act
-    total_con_cupon = carrito.aplicar_cupon(20, 50)  # 20% de 400 = 80, pero límite es 50
+    total_con_cupon = carrito.aplicar_cupon(
+        20, 50
+    )  # 20% de 400 = 80, pero límite es 50
 
     # Assert
     assert total_con_cupon == 350.00

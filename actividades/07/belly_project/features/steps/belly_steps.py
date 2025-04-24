@@ -197,9 +197,9 @@ def step_when_ask_how_many(context):
 def step_then_tell_how_many(context, cantidad):
     pepinos_comidos = context.belly.pepinos_comidos()
     pepinos_restantes = 10 - pepinos_comidos
-    assert pepinos_restantes == float(cantidad), (
-        f"Esperaba {cantidad} pero obtuve {pepinos_restantes}"
-    )
+    assert pepinos_restantes == float(
+        cantidad
+    ), f"Esperaba {cantidad} pero obtuve {pepinos_restantes}"
 
 
 @given("he esperado {horas:f} horas")
@@ -219,7 +219,9 @@ def step_when_eat_more_cucumbers(context, pepinos):
 
 @then("deberia recibir una prediccion de que no gruñira")
 def step_then_prediction_will_not_growl(context):
-    assert not context.prediccion, "La predicción deberia ser que el estomago no gruñira"
+    assert (
+        not context.prediccion
+    ), "La predicción deberia ser que el estomago no gruñira"
 
 
 @given("que el reloj inicial marca {tiempo:d}")

@@ -1,6 +1,6 @@
 class Question:
     """Clase usada para preguntas de trivia con
-        opciones y respuesta correcta."""
+    opciones y respuesta correcta."""
 
     def __init__(self, description, options, correct_answer, difficulty=1):
         """
@@ -16,9 +16,7 @@ class Question:
         if not isinstance(options, list) or len(options) < 2:
             raise ValueError("Debe haber al menos dos opciones.")
         if correct_answer not in options:
-            raise ValueError(
-                "La respuesta correcta debe estar entre las opciones."
-            )
+            raise ValueError("La respuesta correcta debe estar entre las opciones.")
         if not isinstance(difficulty, int) or difficulty < 1:
             raise ValueError("La dificultad debe ser un entero positivo.")
 
@@ -41,16 +39,13 @@ class Question:
 
     def __str__(self):
         """Representacion en string de la pregunta y sus opciones."""
-        options_str = "\n".join(
-            f"{i + 1}) {opt}" for i, opt in enumerate(self.options)
-        )
-        return f"[Dificultad {self.difficulty}]\n" \
-            f"{self.description}\n{options_str}"
+        options_str = "\n".join(f"{i + 1}) {opt}" for i, opt in enumerate(self.options))
+        return f"[Dificultad {self.difficulty}]\n" f"{self.description}\n{options_str}"
 
 
 class Quiz:
     """Maneja el flujo del juego de trivia,
-        incluyendo preguntas y puntuacion."""
+    incluyendo preguntas y puntuacion."""
 
     def __init__(self, total_rounds=0):
         """Inicializa un nuevo juego de trivia."""
@@ -96,9 +91,7 @@ class Quiz:
             bool: True si la respuesta es correcta, False en caso contrario.
         """
         if not isinstance(question, Question):
-            raise TypeError(
-                "El primer argumento debe ser una instancia de Question."
-                )
+            raise TypeError("El primer argumento debe ser una instancia de Question.")
 
         is_correct = question.is_correct(answer)
         if is_correct:

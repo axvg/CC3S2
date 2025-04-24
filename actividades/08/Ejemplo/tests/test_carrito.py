@@ -138,7 +138,6 @@ def test_calcular_total(carrito):
     assert total == 550.00
 
 
-
 def test_aplicar_descuento(carrito, producto):
     """
     AAA:
@@ -321,15 +320,18 @@ def test_obtener_items_ordenados_nombre(carrito):
 
 
 @pytest.mark.parametrize(
-    "precio, cantidad, porcentaje, total_esperado", [
+    "precio, cantidad, porcentaje, total_esperado",
+    [
         (100.0, 2, 10, 180.0),
         (100.0, 2, 25, 150.0),
         (100.0, 2, 50, 100.0),
         (100.0, 2, 0, 200.0),
         (100.0, 2, 100, 0.0),
-    ]
+    ],
 )
-def test_aplicar_descuento_parametrizado(carrito, precio, cantidad, porcentaje, total_esperado):
+def test_aplicar_descuento_parametrizado(
+    carrito, precio, cantidad, porcentaje, total_esperado
+):
     """
     AAA:
     Arrange: Se crea un carrito y se agrega un producto con precio y cantidad.
@@ -349,14 +351,17 @@ def test_aplicar_descuento_parametrizado(carrito, precio, cantidad, porcentaje, 
 
 
 @pytest.mark.parametrize(
-    "cantidad_inicial, nueva_cantidad, es_valido", [
+    "cantidad_inicial, nueva_cantidad, es_valido",
+    [
         (2, 5, True),
         (2, 1, True),
         (2, 0, True),
         (2, -1, False),
-    ]
+    ],
 )
-def test_actualizar_cantidad_parametrizado(carrito, cantidad_inicial, nueva_cantidad, es_valido):
+def test_actualizar_cantidad_parametrizado(
+    carrito, cantidad_inicial, nueva_cantidad, es_valido
+):
     """
     AAA:
     Arrange: Se crea un carrito y se agrega un producto con cantidad inicial.

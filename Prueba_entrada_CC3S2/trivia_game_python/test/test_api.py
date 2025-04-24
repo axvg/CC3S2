@@ -37,7 +37,7 @@ def test_create_question():
         "description": "¿Cuál es la capital de Perú?",
         "options": ["Lima", "Bogotá", "Santiago", "Quito"],
         "correct_answer": "Lima",
-        "difficulty": 1
+        "difficulty": 1,
     }
 
     response = client.post("/questions", json=new_question)

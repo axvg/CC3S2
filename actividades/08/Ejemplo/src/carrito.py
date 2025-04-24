@@ -1,5 +1,6 @@
 # src/carrito.py
 
+
 class Producto:
     def __init__(self, nombre, precio, stock):
         self.nombre = nombre
@@ -38,7 +39,9 @@ class Carrito:
                 elif item.cantidad == cantidad:
                     self.items.remove(item)
                 else:
-                    raise ValueError("Cantidad a remover es mayor que la cantidad en el carrito")
+                    raise ValueError(
+                        "Cantidad a remover es mayor que la cantidad en el carrito"
+                    )
                 return
         raise ValueError("Producto no encontrado en el carrito")
 

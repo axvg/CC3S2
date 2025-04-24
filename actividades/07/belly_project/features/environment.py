@@ -13,7 +13,7 @@ def before_scenario(context, scenario):
 
     def advance_time(hours):
         # Convierte horas a segundos
-        context.current_time += (hours * 3600)
+        context.current_time += hours * 3600
         fake_clock.return_value = context.current_time
 
     context.advance_time = advance_time

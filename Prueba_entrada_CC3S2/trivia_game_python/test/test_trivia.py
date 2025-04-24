@@ -54,7 +54,6 @@ def test_is_correct_false():
 def test_question_str_representation():
     """Verifica la representacion en string de la pregunta."""
     q = Question(QUESTION_DESC, OPTIONS, CORRECT_ANSWER)
-    # Dividir string largo para cumplir E501
     expected_str = (
         "[Dificultad 1]\n"
         "¿Cual es la capital de Francia?\n"
@@ -82,7 +81,7 @@ def test_question_creation_invalid_difficulty():
         Question("Desc", ["A", "B"], "A", difficulty=1.5)
 
 
-# --- Pruebas para la clase Quiz ---
+# --- Pruebas para Quiz ---
 
 Q1 = Question("Pregunta 1", ["A", "B"], "A")
 Q2 = Question("Pregunta 2", ["C", "D", "E"], "D")
@@ -113,7 +112,6 @@ def test_quiz_add_question_valid():
 def test_quiz_add_question_invalid_type():
     """Verifica que falla al anadir algo que no es Question."""
     quiz = Quiz()
-    # Corregir el mensaje esperado para que coincida con el error real
     msg = r"Solo se pueden agregar objetos de tipo Question\."
     with pytest.raises(TypeError, match=msg):
         quiz.add_question("esto no es valido")
@@ -166,8 +164,6 @@ def test_quiz_has_more_questions():
     assert quiz.has_more_questions() is False
 
 
-# --- Pruebas para Puntuacion en Quiz ---
-
 def test_quiz_initial_score():
     """Verifica que la puntuacion inicial es cero."""
     quiz = Quiz()
@@ -197,7 +193,7 @@ def test_quiz_answer_question_correct():
 
 def test_quiz_answer_question_incorrect():
     """Verifica que responder incorrectamente
-        incrementa el puntaje incorrecto."""
+    incrementa el puntaje incorrecto."""
     quiz = Quiz()
     q = Question("Pregunta Test", ["Opcion A", "Opcion B"], "Opcion B")
     quiz.add_question(q)
@@ -240,7 +236,7 @@ def test_quiz_answer_question_invalid_arg():
 
 def test_quiz_stops_after_total_rounds():
     """Verifica que has_more_questions y
-        get_next_question respetan total_rounds."""
+    get_next_question respetan total_rounds."""
     quiz = Quiz(total_rounds=2)
     quiz.add_question(Q1)
     quiz.add_question(Q2)
