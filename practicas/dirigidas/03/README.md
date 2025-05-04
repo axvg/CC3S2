@@ -1,5 +1,10 @@
 ### Herramientas del shell
 
+<details>
+<summary>
+ls
+</summary>
+
 1 . Lee la ayuda de [man ls](https://www.man7.org/linux/man-pages/man1/ls.1.html) y escribe un comando `ls` que liste archivos de la siguiente manera:
 
 - Incluye todos los archivos, incluidos los ocultos  
@@ -20,8 +25,10 @@ drwx------+ 47 user group 1.5K Jan 12 18:08 ..
 ### Bash
 
 > Guarda cada bloque en su correspondiente archivo, dale permisos con `chmod +x` y adáptalo a tu repositorio.
+</details>
 
-#### Paso 1 – Abrir la terminal y verificar Bash
+<details>
+<summary>Paso 1 – Abrir la terminal y verificar Bash</summary>
 
 1. Abre tu **Terminal** en Linux/macOS o Git Bash en Windows.  
 2. Comprueba la versión de Bash:
@@ -32,8 +39,10 @@ drwx------+ 47 user group 1.5K Jan 12 18:08 ..
    ```bash
    #!/usr/bin/env bash
    ```
+</details>
 
-#### Paso 2 – "Hello, World!": tu primer script
+<details>
+<summary>Paso 2 – "Hello, World!": tu primer script</summary>
 
 1. Crea `hello.sh`:
    ```bash
@@ -52,8 +61,10 @@ drwx------+ 47 user group 1.5K Jan 12 18:08 ..
    ```bash
    ./hello.sh
    ```
+</details>
 
-#### Paso 3 – Asignación de variables
+<details>
+<summary>Paso 3 – Asignación de variables</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -68,8 +79,10 @@ echo "Entorno: $ENV"
 
 - Usa siempre comillas al expandir: `"$VAR"`.  
 - Activa `set -u` para error si variable no definida.
+</details>
 
-#### Paso 4 – Parámetros posicionales
+<details>
+<summary>Paso 4 – Parámetros posicionales</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -86,7 +99,10 @@ Ejecuta:
 ```bash
 ./script_params.sh f1 f2 f3
 ```
-#### Paso 5 – Arrays en Bash
+</details>
+
+<details>
+<summary>Paso 5 – Arrays en Bash</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -101,8 +117,10 @@ done
 declare -A EDADES=([Alice]=28 [Kapu]=35)
 echo "Kapu tiene ${EDADES[Kapu]} años"
 ```
+</details>
 
-#### Paso 6 – Expansiones
+<details>
+<summary>Paso 6 – Expansiones</summary>
 
 #### Aritmética
 
@@ -128,8 +146,10 @@ echo "${VAR:-default}"       # default si VAR vacío
 txt="archivo.tar.gz"
 echo "${txt%.tar.gz}"        # quita sufijo
 ```
+</details>
 
-#### Paso 7 – Pipes y redirección
+<details>
+<summary>Paso 7 – Pipes y redirección</summary>
 
 ```bash
 # stdout a archivo
@@ -143,8 +163,10 @@ ps aux | grep sshd | awk '{print $2}'
 # process substitution
 diff <(sort file1) <(sort file2)
 ```
+</details>
 
-#### Paso 8 – Condicionales
+<details>
+<summary>Paso 8 – Condicionales</summary>
 
 #### if
 
@@ -173,8 +195,10 @@ case "$ext" in
   *)   echo "Desconocido" ;;
 esac
 ```
+</details>
 
-#### Paso 9 – Bucles
+<details>
+<summary>Paso 9 – Bucles</summary>
 
 ```bash
 # for clásico
@@ -191,8 +215,10 @@ while (( count>0 )); do echo "$count"; ((count--)); done
 until [[ -f resultado.txt ]]; do sleep 1; done
 echo "resultado.txt listo"
 ```
+</details>
 
-#### Paso 10 – Funciones
+<details>
+<summary>Paso 10 – Funciones</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -213,19 +239,29 @@ else
   echo "Error división"
 fi
 ```
+</details>
 
-#### Paso 11 – Depuración
+<details>
+<summary>Paso 11 – Depuración</summary>
 
 ```bash
 set -xe  # traza + salir al error
 export PS4='+ ${BASH_SOURCE}:${LINENO}:${FUNCNAME[0]}: '
 trap 'echo "Error en línea $LINENO"; exit 1' ERR
 ```
+</details>
+
 ### **Ejercicios**
 
+<details>
+<summary>Ejercicio 1</summary>
 
 1 . Escribe funciones de Bash `marco` y `polo` que hagan lo siguiente: cada vez que ejecutes `marco`, debe guardarse de alguna manera el directorio de trabajo actual, luego, cuando ejecutes `polo`, sin importar en qué directorio te encuentres, `polo` te debe devolver (con `cd`) al directorio en el que ejecutaste `marco`.
    Para facilitar la depuración, puedes poner el código en un archivo `marco.sh` y recargarlo con `source marco.sh`.
+</details>
+
+<details>
+<summary>Ejercicio 2</summary>
 
 2 . Tienes un comando que falla muy raramente. Para depurarlo necesitas capturar su salida, pero puede llevar tiempo que falle. Escribe un script de Bash que ejecute el siguiente fragmento **hasta que falle**, capture sus flujos de salida estándar y de error en archivos, y finalmente imprima todo:
 
@@ -243,6 +279,10 @@ fi
 echo "Todo salio de acuerdo al plan"
 ```
 Indica cuántas ejecuciones fueron necesarias para que ocurriera el fallo.
+</details>
+
+<details>
+<summary>Ejercicio 3</summary>
 
 3 . El `-exec` de `find` puede ser muy poderoso para realizar operaciones sobre los archivos que encuentra. Sin embargo, ¿qué pasa si queremos hacer algo con **todos** los archivos, como crear un archivo ZIP? Algunos comandos leen de **STDIN**, pero otros (como `tar`) necesitan recibir la lista de archivos como argumentos. Para unir ambos mundos tenemos `xargs`, que ejecuta un comando tomando su **STDIN** como lista de argumentos. Por ejemplo:
 
@@ -253,10 +293,16 @@ ls | xargs rm
 eliminará los archivos que `ls` lista.
 
 **Tu tarea**: escribe un comando que encuentre **de manera recursiva** todos los archivos HTML en una carpeta y los comprima en un ZIP. Ten en cuenta que debe funcionar aunque los nombres de archivo contengan espacios (pista: revisa la opción `-d` o usa `-print0` en `find` junto con `-0` en `xargs`).
+</details>
+
+<details>
+<summary>Ejercicio 4</summary>
 
 4 . Escribe un comando o script que, de forma recursiva, encuentre el archivo **más recientemente modificado** en un directorio. Y, más en general, ¿puedes listar todos los archivos por orden de recencia?
+</details>
 
-#### Paso 12 – Expresiones regulares en Bash
+<details>
+<summary>Paso 12 – Expresiones regulares en Bash</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -269,7 +315,10 @@ else
   echo "Email inválido"
 fi
 ```
-#### Paso 13 – Expresiones regulares en Python
+</details>
+
+<details>
+<summary>Paso 13 – Expresiones regulares en Python</summary>
 
 Crea `extract_emails.py`:
 
@@ -286,8 +335,10 @@ Uso:
 ```bash
 cat logs.txt | python3 extract_emails.py
 ```
+</details>
 
-**Validar nombre de rama**
+<details>
+<summary>Validar nombre de rama</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -300,8 +351,10 @@ if [[ ! $branch =~ $re ]]; then
   exit 1
 fi
 ```
+</details>
 
-**Validar mensaje de commit**
+<details>
+<summary>Validar mensaje de commit</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -314,8 +367,10 @@ if ! grep -Eq "$re" "$msg_file"; then
   exit 1
 fi
 ```
+</details>
 
-**Validar formato de tag semántico**
+<details>
+<summary>Validar formato de tag semántico</summary>
 
 ```bash
 #!/usr/bin/env bash
@@ -328,8 +383,10 @@ if [[ ! $tag =~ $re ]]; then
   exit 1
 fi
 ```
+</details>
 
-**Extraer issue IDs de mensajes (`git log`)**
+<details>
+<summary>Extraer issue IDs de mensajes (`git log`)</summary>
 
 ```bash
 git log --oneline | \
@@ -339,15 +396,20 @@ git log --oneline | \
 # [A-Z]{2,5}-[0-9]+  ─ proyecto-1234
 # (?=\])   ─ lookahead para "]"
 ```
+</details>
 
-**Detectar merges automáticos y extraer la rama objetivo**
+<details>
+<summary>Detectar merges automáticos y extraer la rama objetivo</summary>
 
 ```bash
 git log --grep='^Merge branch' --pretty=format:'%s' | \
   grep -Po '(?<=Merge branch ')[^']+' 
 # Captura el nombre de la rama tras "merge branch '<rama>'"
 ```
-**Paso con grupo nombrado y alternancia**
+</details>
+
+<details>
+<summary>Paso con grupo nombrado y alternancia</summary>
 
 ```python
 from behave import given
@@ -359,8 +421,10 @@ def step_user_items(context, user, count):
     context.user = user
     context.count = int(count)
 ```
+</details>
 
-**Paso con partes opcionales y lookahead**
+<details>
+<summary>Paso con partes opcionales y lookahead</summary>
 
 ```python
 from behave import when
@@ -373,8 +437,10 @@ def step_login_optional_pw(context, pw=None):
     #   'el usuario intenta iniciar sesión con contraseña "abc"'
     context.pw = pw
 ```
+</details>
 
-**Validar formatos de fecha dentro de un paso**
+<details>
+<summary>Validar formatos de fecha dentro de un paso</summary>
 
 ```python
 from behave import then
@@ -385,8 +451,10 @@ def step_check_date(context, date):
     import datetime
     datetime.datetime.strptime(date, '%Y-%m-%d')
 ```
+</details>
 
-**Step definition para comandos Git**
+<details>
+<summary>Step definition para comandos Git</summary>
 
 ```python
 from behave import given
@@ -397,8 +465,10 @@ def step_on_branch(context, branch):
     current = subprocess.check_output(['git','rev-parse','--abbrev-ref','HEAD']).decode().strip()
     assert current == branch
 ```
+</details>
 
-**Capturar tablas Gherkin con regex dinámico**
+<details>
+<summary>Capturar tablas Gherkin con regex dinámico</summary>
 
 ```python
 from behave import then
@@ -414,8 +484,10 @@ def step_table_users(context):
         assert re.match(r'^[a-z]+$', row['user'])
         assert re.match(r'^[0-9]{1,3}$', row['age'])
 ```
+</details>
 
-**Scenario outline con ejemplos que usan regex**
+<details>
+<summary>Scenario outline con ejemplos que usan regex</summary>
 
 ```gherkin
 Scenario Outline: Validación de correos
@@ -445,8 +517,10 @@ def step_check_email(context, valid):
     match = bool(EMAIL_RE.match(context.email))
     assert match == (valid == 'True')
 ```
+</details>
 
-#### Paso 14 – BDD con `behave`
+<details>
+<summary>Paso 14 – BDD con `behave`</summary>
 
 1. **Feature** (`features/login.feature`):
    ```gherkin
@@ -481,7 +555,10 @@ def step_check_email(context, valid):
    ```bash
    behave -q
    ```
-#### Paso 15 – Pipelines CI
+</details>
+
+<details>
+<summary>Paso 15 – Pipelines CI</summary>
 
 **GitHub actions** (`.github/workflows/ci.yml`):
 
@@ -512,11 +589,17 @@ bdd:
     behave -q
 all: lint test bdd
 ```
+</details>
 
-**Problema 1: Script de limpieza de ramas y atashes en Git**
+
+<details>
+<summary>
+Problema 1: Script de limpieza de ramas y atashes en Git
+
 
 Construye un script Bash llamado `clean_git.sh` que automatice la limpieza de ramas locales y remotas y gestione stashes de  forma interactiva, aplicando exclusivamente los conceptos de variables, parámetros posicionales, arrays, expansiones, pipes, 
 condicionales, bucles, funciones y depuración vistos en el tutorial.
+</summary>
 
 **Pasos**
 
@@ -550,10 +633,15 @@ condicionales, bucles, funciones y depuración vistos en el tutorial.
 24. Añade un `else` que muestre la ayuda si la opción no coincide.  
 25. Incluir una regla de depuración: si se pasa `--debug`, activar `set -x` y exportar `PS4='+ ${BASH_SOURCE}:${LINENO}:${FUNCNAME[0]}: '`.  
 26. Prueba el script dentro de un repositorio con varias ramas y stashes, verificando que los arrays y bucles funcionan correctamente.  
-27. Documenta en un README los comandos de uso y ejemplos de ejecución.    
+27. Documenta en un README los comandos de uso y ejemplos de ejecución.
+</details>
 
-**Problema 2 : Hook Pre‑Commit y generador de reporte en Bash**  
+
+<details>
+<summary>
+Problema 2 : Hook Pre‑Commit y generador de reporte en Bash**  
 Implementa un hook `pre-commit` en Bash que ejecute una serie de comprobaciones y, en caso de éxito, lance un script de generación de reporte del estado del repositorio, aplicando exclusivamente variables, arrays, loops, condicionales, expansiones y funciones de Bash.
+</summary>
 
 1. Crea el archivo `.git/hooks/pre-commit` con `#!/usr/bin/env bash` y permisos `chmod +x`.  
 2. Al inicio del hook, activa `set -euo pipefail` y documenta el propósito del hook con comentarios.  
@@ -586,8 +674,12 @@ Implementa un hook `pre-commit` en Bash que ejecute una serie de comprobaciones 
 10. Documenta cada función y paso con comentarios claros.  
 11. Prueba el hook en un repositorio con archivos Bash, Python y C++, confirmando que se comporta como se espera ante múltiples escenarios (TODOs detectados, scripts con errores de sintaxis, commits limpios).  
 12. Incluye en el repositorio un archivo `HOOKS_README.md` con instrucciones de instalación y ejemplos de uso del hook.
+</details>
 
-**Problema 3: Generador de documentación automático**  
+<details>
+<summary>
+Problema 3: Generador de documentación automático  
+</summary>
 
 **Contexto:** Cada vez que se añade o modifica un docstring en un archivo Python, quieres generar automáticamente un sitio estático de documentación.  
 1. Crea un hook `post-commit` que:  
@@ -602,3 +694,4 @@ Implementa un hook `pre-commit` en Bash que ejecute una serie de comprobaciones 
 4. Desarrolla pruebas Pytest parametrizadas para:  
    - Docstrings que contienen comillas triples anidadas.  
    - Casos límites: funciones sin docstrings deben ser ignoradas sin error.
+</details>
