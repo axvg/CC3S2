@@ -7,7 +7,7 @@ class UserManager:
         self.users = {}
 
     def add_user(self, username, password):
-        if username in self.users:
+        if self.user_exists(username):
             raise UserAlreadyExistsError(f"El usuario '{username}' ya existe.")
         self.users[username] = password
 
