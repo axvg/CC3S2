@@ -92,6 +92,19 @@ class UserManager:
 Volvemos a ejecutar `pytest` y ahora la prueba debe pasar.
 </details>
 
+Solucion:
+
+Se implementa la clase `UserManager` y la excepcion `UserAlreadyExistsError` segun el ejemplo. Se eecuta de nuevo:
+
+https://github.com/axvg/CC3S2/blob/eed4bbe9cd68688e8476e464486c9ec25bf42fbf/actividades/09/src/user_manager.py#L1-L15
+
+```sh
+pytest -v
+```
+
+Ahora la prueba pasa correctamente.
+
+![01](img/01.png)
 
 <details>
 <summary>
