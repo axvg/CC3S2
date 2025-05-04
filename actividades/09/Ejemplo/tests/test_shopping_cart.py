@@ -47,7 +47,7 @@ def test_process_payment():
     result = cart.process_payment(total)
 
     payment_gateway.process_payment.assert_called_once_with(total)
-    assert result == True
+    assert result
 
 
 def test_process_payment_failure():
