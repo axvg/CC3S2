@@ -32,8 +32,18 @@ En tu terminal, ejecuta el siguiente comando:
 ```
 python3 -m pip install pytest pytest-cov
 ```
-
 </details>
+
+Solucion:
+
+Para estos pasos se creara un entorno virtual. Se ejecutara los siguientes comandos:
+
+```sh
+python -m venv .venv
+source .venv/Scripts/activate
+pip install pytest pytest-cov
+```
+
 
 <details>
 <summary>
@@ -94,8 +104,25 @@ Sin embargo, si deseas ejecutar las pruebas en un orden aleatorio, pytest ofrece
 ```
 pytest --random-order
 ```
-
 </details>
+
+Solucion:
+
+Se ejecutaran los tests del stack con:
+
+```sh
+pytest -v
+```
+
+Como se tiene `pytest-cov`, se puede verificar que porcentaje de coverage cubrimos en los tests:
+```sh
+pytest -v --cov=stack
+```
+
+![00](img/00.png)
+
+Se puede comprobar que se tiene 100% de coverage en stack
+
 
 <details>
 <summary>
@@ -126,8 +153,19 @@ def test_pop(self):
     self.stack.pop()
     self.assertTrue(self.stack.is_empty())
 ```
-
 </details>
+
+Solucion:
+
+Se implemento el test para `is_empty` agregando primero un elemento y verificando que el stack ya no esta vacio.
+```python
+def test_is_empty():
+    stack = Stack()
+    assert stack.is_empty() == True  # La pila recién creada debe estar vacía
+    stack.push(5)
+    assert stack.is_empty() == False  # Después de agregar un elemento, la pila no debe estar vacía
+```
+
 
 <details>
 <summary>
@@ -141,10 +179,18 @@ Ejecuta pytest para verificar si la prueba del método `is_empty()` pasa:
 ```
 pytest -v
 ```
+</details>
 
 Si la prueba pasa, verás que `is_empty()` ha pasado. Si no, revisa el código para asegurar que la lógica de la prueba es correcta.
 
-</details>
+Solucion:
+
+Se ejecuta el comando para verificar este test:
+
+```sh
+pytest test_stack.py::TestStack::test_is_empty
+```
+![03](img/03.png)
 
 <details>
 <summary>
@@ -173,8 +219,21 @@ def test_peek(self):
     self.stack.push(5)
     self.assertEqual(self.stack.peek(), 5)
 ```
-
 </details>
+
+Solucion:
+
+El test para `peek` verifica que el elemento superior es el ultimo insertado y que el stack no cambia tras llamar a `peek` varias veces.
+
+```python
+def test_peek():
+    stack = Stack()
+    stack.push(1)
+    stack.push(2)
+    assert stack.peek() == 2  # El valor superior debe ser el último agregado (2)
+    assert stack.peek() == 2  # La pila no debe cambiar después de peek()
+```
+
 
 <details>
 <summary>
@@ -206,8 +265,21 @@ def test_pop(self):
     self.stack.pop()
     self.assertTrue(self.stack.is_empty())
 ```
-
 </details>
+
+Solucion:
+
+El test para `pop` agrega dos elementos, elimina el superior y verifica que el siguiente elemento es el anterior. 
+
+```python
+def test_pop():
+    stack = Stack()
+    stack.push(1)
+    stack.push(2)
+    assert stack.pop() == 2  # El valor superior (2) debe eliminarse y devolverse
+    assert stack.peek() == 1  # Después de pop(), el valor superior debe ser 1
+```
+
 
 <details>
 <summary>
@@ -237,8 +309,21 @@ Comprueba con este código tambien:
     self.stack.push(5)
     self.assertEqual(self.stack.peek(), 5)
 ```
-
 </details>
+
+Solucion:
+
+El test para `push` agrega elementos y verifica que el ultimo insertado es el que queda en la cima.
+
+```py
+def test_push():
+    stack = Stack()
+    stack.push(1)
+    assert stack.peek() == 1  # El valor recién agregado debe estar en la parte superior
+    stack.push(2)
+    assert stack.peek() == 2  # Después de otro push, el valor superior debe ser el último agregado
+```
+
 
 <details>
 <summary>
@@ -253,8 +338,18 @@ Ejecuta pytest nuevamente para asegurarte de que todas las pruebas pasan:
 pytest -v
 ```
 Si todo está correcto, todas las pruebas deberían pasar y la salida mostrará resultados exitosos.
-
 </details>
+
+
+Solucion:
+
+Se ejecuta todos los tests con:
+
+```sh
+pytest -v
+```
+Todos los tests pasan por lo que la implementacion de la estructura stack es correcta.
+
 
 <details>
 <summary>
@@ -269,8 +364,21 @@ Para asegurarte de que tus pruebas cubren suficiente código, puedes generar un 
 pytest --cov=stack --cov-report term-missing
 ```
 Esto te mostrará cuántas líneas de código están cubiertas por las pruebas y cuáles no.
-
 </details>
+
+Solucion:
+
+Para ver el porcentaje de lineas cubiertas por los tests se ejecuta:
+
+```sh
+pytest --cov=stack --cov-report=term-missing
+```
+Esto muestra que lineas no estan cubiertas. Si se usa `--cov-report=html` para el reporte en html, se muestra que:
+
+![01](img/01.png)
+
+Todas las lineas estan testeadas correctamente
+
 
 <details>
 <summary>
@@ -300,5 +408,26 @@ Este es un archivo de configuración para pytest y coverage, que personaliza có
     - `show_missing = True` Esta opción asegura que el informe muestre qué líneas de código están faltando en la cobertura, es decir, aquellas que no fueron ejecutadas por las pruebas. Esto te ayuda a identificar fácilmente las partes del código que no han sido probadas y donde podrías necesitar agregar más casos de prueba.
 
 Este tipo de configuración es útil para obtener información clara sobre qué partes del código han sido probadas, y al mismo tiempo te permite ver qué partes del código aún requieren más cobertura de pruebas.
-
 </details>
+
+Solucion:
+
+Se automatiza `pytest` usando el archivo `setup.cfg`y se aplican los parametros siguientes:
+```sh
+[tool:pytest]
+addopts = -v --tb=short --cov=stack --cov-report=term-missing --cov-report=html --disable-warnings
+
+[coverage:run]
+branch = True
+omit =
+    */tests/*
+    */test_*
+
+[coverage:report]
+show_missing = True
+fail_under = 100
+```
+Esto nos permite que escribiendo en la terminal: `pytest` se pueda tener un coverage y un reporte html sin usar las opciones adicionales como en pasos anteriores, ademas se evita tener warnings en en el resultado.
+
+![02](img/02.png)
+
