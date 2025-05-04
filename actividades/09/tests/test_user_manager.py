@@ -1,4 +1,4 @@
-from user_manager import UserManager, UserAlreadyExistsError
+from src.user_manager import UserManager
 
 
 def test_agregar_usuario_exitoso():
