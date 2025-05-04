@@ -172,14 +172,18 @@ Notar que hemos creado un `FakeHashService` que actúa como un **Fake**: se comp
 Si ejecutamos la prueba, fallará porque no hemos implementado ni `authenticate_user` ni la inyección de `hash_service`.
 </details>
 
+https://github.com/axvg/CC3S2/blob/2fa70ce4c5650ed01d5db8943627d11540249a54/actividades/09/tests/test_user_manager.py#L18-L44
+
+Se crea un fakeService de hashing para pruebas. se ejecuta el test y este falla porque `UserManager` no tiene metodos relacionados.
+
+![02](img/02.png)
+
 <details>
 <summary>
 <h4>
 Paso 2 (Green): Implementamos la funcionalidad y la DI
 </h4>
 </summary>
-
-Modificamos `user_manager.py` para inyectarle un servicio de hashing:
 
 ```python
 class UserNotFoundError(Exception):
@@ -227,12 +231,17 @@ class UserManager:
 Ejecutamos `pytest` y la prueba debería pasar. Nuestra inyección de dependencias nos permite cambiar la lógica de hashing sin modificar `UserManager`.
 </details>
 
+Solucion:
 
-```sh
-pytest -v
-```
-Como se muestra, la prueba pasa por la implementacion que es correcta.
+Se modifica `user_manager.py` para inyectarle un servicio de hashing:
 
+https://github.com/axvg/CC3S2/blob/026b8f81ddd59e909b7a7543831771c7d9d40b2f/actividades/09/src/user_manager.py#L10-L28
+
+Se usa este servicio para el metodo de autenticacion:
+
+https://github.com/axvg/CC3S2/blob/026b8f81ddd59e909b7a7543831771c7d9d40b2f/actividades/09/src/user_manager.py#L39-L43
+
+Con esta implementacion el test pasa correctamente.
 
 <details>
 <summary>
@@ -244,6 +253,11 @@ Paso 3 (Refactor)
 Podemos refactorizar si lo consideramos necesario, pero por ahora la estructura cumple el propósito.
 </details>
 
+Solucion:
+
+Se crea un metodo para el servicio de hash y dentro una clase interna `DefaultHashService` para usar el servicio de manera similar y hacer el codigo mas legible separando esta funcionalidad en un nuevo metodo
+
+https://github.com/axvg/CC3S2/blob/62d5aa0ca12c0ca93eb2903dcb678b4bacb7cecc/actividades/09/src/user_manager.py#L19-L27
 
 
 ### Iteración 3: Uso de un Mock para verificar llamadas (Spy / Mock)
