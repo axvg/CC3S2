@@ -116,7 +116,9 @@ Paso 3 (Refactor)
 Revisamos que el código sea claro y conciso. Por ahora, el diseño es simple y cumple su función.
 </details>
 
+Se usa el metodo adicional para que sea mas facil de leer si un usuario existe:
 
+https://github.com/axvg/CC3S2/blob/135a7dd6997acbd8765c5293b67abed38654c82e/actividades/09/src/user_manager.py#L10
 
 ### Iteración 2: Autenticación de usuario (Introducción de una dependencia para Hashing)
 
