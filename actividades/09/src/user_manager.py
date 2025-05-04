@@ -14,18 +14,17 @@ class UserManager:
         (simplemente para no romper el código).
         """
         self.users = {}
-        self.hash_service = hash_service
-        if not self.hash_service:
-            # Si no pasamos un hash_service, usamos uno fake por defecto.
-            # En producción, podríamos usar bcrypt o hashlib.
-            class DefaultHashService:
-                def hash(self, plain_text: str) -> str:
-                    return plain_text  # Pésimo, pero sirve de ejemplo.
+        self.hash_service = hash_service or self._default_hash_service()
 
-                def verify(self, plain_text: str, hashed_text: str) -> bool:
-                    return plain_text == hashed_text
+    def _default_hash_service(self):
+        # Hash por defecto si no se provee nada
+        class DefaultHashService:
+            def hash(self, plain_text: str) -> str:
+                return plain_text
 
-            self.hash_service = DefaultHashService()
+            def verify(self, plain_text: str, hashed_text: str) -> bool:
+                return plain_text == hashed_text
+        return DefaultHashService()
 
     def add_user(self, username, password):
         if username in self.users:
