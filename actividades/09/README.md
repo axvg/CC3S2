@@ -39,6 +39,30 @@ Si ejecutamos `pytest`, la prueba fallará porque aún no hemos implementado la 
 
 </details>
 
+
+Solucion:
+
+Primero, se creara el entorno virtual:
+
+```sh
+python -m venv .venv
+source .venv/Scripts/activate
+pip install pytest
+```
+Se agrega el test:
+
+https://github.com/axvg/CC3S2/blob/1cd3d6f027260f8380222bce4093c7f3deb17c09/actividades/09/tests/test_user_manager.py#L4-L15
+
+
+Luego ejecuta los tests con:
+
+```sh
+pytest -v
+```
+La prueba falla porque la clase `UserManager` aun no existe.
+
+![00](img/00.png)
+
 <details>
 <summary>
 <h4>
