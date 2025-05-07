@@ -88,6 +88,17 @@ pytest
 
 </details>
 
+Solucion:
+
+Se realiza el fixture para la base de datos de la siguiente manera:
+
+https://github.com/axvg/CC3S2/blob/847c14837f84280daab2ae30c67dbcac97f4a918/actividades/12/tests/test_account.py#L12-L18
+
+De esta manera se abre y cierra la db para cada test.
+
+
+Antes de ejecutar los tests se necesitan instalar las librerias para esta actividad que son: `flask` y `pytest` y `sql-alchemy`. Se crea un archivo `requirements.txt`
+
 <details>
 <summary>
 <h2>
@@ -144,6 +155,19 @@ pytest
 
 </details>
 
+Solucion:
+
+Abrimos el archivo json para utilizar estos datos:
+
+https://github.com/axvg/CC3S2/blob/847c14837f84280daab2ae30c67dbcac97f4a918/actividades/12/tests/test_account.py#L27-L28
+
+y como se usa esta variable de manera `global` podra usarse en todo los tests:
+
+https://github.com/axvg/CC3S2/blob/847c14837f84280daab2ae30c67dbcac97f4a918/actividades/12/tests/test_account.py#L26
+
+Se ejecutan los tests y se muestran que siguen corriendo correctamente:
+
+
 <details>
 <summary>
 <h2>
@@ -184,6 +208,18 @@ pytest
 
 </details>
 
+Solucion:
+
+Se prueba el metodo `create()` de la clase `Account` y despues se obtiene todas las cuentas creadas (solo una hasta ahora) y por eso la longitud de la lista es 1.
+
+Aca tambien se usa `**data` para usar los campos del diccionario como entrada al constructor de la clase.
+
+https://github.com/axvg/CC3S2/blob/847c14837f84280daab2ae30c67dbcac97f4a918/actividades/12/tests/test_account.py#L49-L54
+
+Se usa `ACCOUNT_DATA` porque es una variable `global` como se indico en el paso anterior.
+
+Los tests se ejecuta correctamente.
+
 <details>
 <summary>
 <h2>
@@ -221,6 +257,16 @@ pytest
 ```
 
 </details>
+
+Solucion:
+
+Para esta prueba se usaran todos los datos del archivo json, se hara un loop y se creara individualmente cada cuenta:
+
+https://github.com/axvg/CC3S2/blob/847c14837f84280daab2ae30c67dbcac97f4a918/actividades/12/tests/test_account.py#L56-L61
+
+y se compara la cantidad de cuentas creadas con la cantidad de diccionarios en el archivo json
+
+Esta prueba se cumple correctamente
 
 <details>
 <summary>
@@ -276,6 +322,15 @@ pytest
 ```
 
 </details>
+
+Solucion:
+
+- Aca se usa el concepto de Four-phase test, en especial los pasos de Setup y Teardown para crear un instancia de la db con una sesion activa y lista para realizar queries y luego de realizar el test remover la sesion para que la siguiente lista de tests tenga una db limpia.
+
+
+https://github.com/axvg/CC3S2/blob/847c14837f84280daab2ae30c67dbcac97f4a918/actividades/12/tests/test_account.py#L32-L43
+
+Los tests ejecutados muestran el correcto funcionamietno de setup y teardown realizados
 
 De esta forma, has aprendido a utilizar los diferentes tipos de fixtures disponibles en `pytest` para preparar y limpiar el estado antes y después de las pruebas, tanto a nivel de módulo como a nivel de clase y de método.
 
