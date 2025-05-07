@@ -27,6 +27,16 @@ drwx------+ 47 user group 1.5K Jan 12 18:08 ..
 > Guarda cada bloque en su correspondiente archivo, dale permisos con `chmod +x` y adáptalo a tu repositorio.
 </details>
 
+Se escribe el siguiente comando para mostrar las opciones pedidas de `ls`:
+
+https://github.com/axvg/CC3S2/blob/993364664f96dcd47d0211df26c1f11bc17f1dfa/practicas/dirigidas/03/ls-script.sh#L1-L11
+
+Al ejecutar este script se mostrara el siguiente resultado
+
+![00](img/00.png)
+
+Se muestra la ejecucion pedida de `ls` en formato legible humano y coloreado.
+
 <details>
 <summary>Paso 1 – Abrir la terminal y verificar Bash</summary>
 
@@ -368,6 +378,12 @@ if ! grep -Eq "$re" "$msg_file"; then
 fi
 ```
 </details>
+
+El contenido de este script se puede ejecutar usando:
+
+```sh
+ bash validate_commit.sh <(echo "fix(foo): add new files")
+```
 
 <details>
 <summary>Validar formato de tag semántico</summary>
