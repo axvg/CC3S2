@@ -386,6 +386,16 @@ Paso 2 (Green)
 Nuestra lógica ya lanza `UserAlreadyExistsError` si `user_exists` devuelve `True`. Así que la prueba debería pasar sin modificar el código.
 </details>
 
+Solucion:
+
+Este test corre correctamente:
+
+![07](img/07.png)
+
+Debido a que se llama el metodo `user_exists` (que es usado en el stub para que retorne siempre `True`) y este hara que se emita el error `UserAlreadyExistsError`:
+
+https://github.com/axvg/CC3S2/blob/6846f3b603655100fbb45b9c0ebe494d0e7a2aad/actividades/09/src/user_manager.py#L30-L31
+
 <details>
 <summary>
 <h4>
@@ -441,6 +451,14 @@ def test_inyectar_repositorio_inmemory():
 
 Como vemos, ahora `UserManager` debería aceptar un `repo` para almacenar y consultar usuarios, en vez de usar un diccionario interno.
 </details>
+
+Se agrega la prueba:
+
+https://github.com/axvg/CC3S2/blob/6846f3b603655100fbb45b9c0ebe494d0e7a2aad/actividades/09/tests/test_user_manager.py#L76-L100
+
+Este test usa la memoria para realizar pruebas (en lugar de una base de datos). Se prueba que al agregar un usuario este existe. Sin embargo este test fallara porque no se tiene un argumento `repo` en el constructor de la clase `UserManager`.
+
+![05](img/05.png)
 
 
 <details>
