@@ -519,6 +519,19 @@ class UserManager:
 Volvemos a correr los tests. Ahora debe pasar.
 </details>
 
+Solucion:
+
+Se agrega el argumento para `repo` y un `_default_repo` (por si se olvida inyectar un repo)
+
+https://github.com/axvg/CC3S2/blob/fd60d982656fddfb663b4ba0c5f6d9444b88751f/actividades/09/src/user_manager.py#L10-L17
+
+Este `_default_repo` es basicamente un diccionario de python que tiene metodo similar al de `save_user` de la clase `UserManager`:
+
+https://github.com/axvg/CC3S2/blob/fd60d982656fddfb663b4ba0c5f6d9444b88751f/actividades/09/src/user_manager.py#L33-L49
+
+De hecho, debido a que la validacion de que un usuario exista esta en este `repo`, la validacion para el metodo `save_user` de la clase `UserManager` se remueve:
+
+https://github.com/axvg/CC3S2/blob/fd60d982656fddfb663b4ba0c5f6d9444b88751f/actividades/09/src/user_manager.py#L51-L53
 
 <details>
 <summary>
@@ -563,6 +576,15 @@ def test_envio_correo_bienvenida_al_agregar_usuario():
 Esta prueba fallará al inicio porque `UserManager` aún no llama a ningún `send_welcome_email`.
 </details>
 
+Solucion:
+
+Se agrega el siguiente test:
+
+https://github.com/axvg/CC3S2/blob/fd60d982656fddfb663b4ba0c5f6d9444b88751f/actividades/09/tests/test_user_manager.py#L103-L114
+
+Aca se prueba que se envia un correo de bienvenida al registro de un usuario, sin embargo este metodo aun no es llamado por `UserManager`. Aca se esta realizando TDD por lo que el test fallara.
+
+![06](img/06.png)
 
 <details>
 <summary>
@@ -592,6 +614,19 @@ class UserManager:
 Ejecutamos de nuevo `pytest`. Ahora la prueba debe pasar, ya que llamamos al `email_service`.
 </details>
 
+Solucion:
+
+Se agrega la inyeccion de la dependencia `email_service` al `UserManager`:
+
+https://github.com/axvg/CC3S2/blob/fd60d982656fddfb663b4ba0c5f6d9444b88751f/actividades/09/src/user_manager.py#L10-L18
+
+Aca a diferencia de `repo` o `hash_service` no se tiene un valor por defecto si es que se olvida de entregar uno ya que:
+
+https://github.com/axvg/CC3S2/blob/fd60d982656fddfb663b4ba0c5f6d9444b88751f/actividades/09/src/user_manager.py#L54-L55
+
+Si este servicio no es inyectado no se enviara correo al registro del usuario, con estos cambios el test pasa a verde:
+
+![07](img/07.png)
 
 <details>
 <summary>
@@ -602,6 +637,8 @@ Paso 3 (Refactor)
 </details>
 
 ---
+
+<details>
 
 ### Ejercicio integral
 
@@ -1079,4 +1116,5 @@ Paso 3 (Refactor)
 </summary>
 
 Código listo. Hemos demostrado el uso de un Mock/Spy para verificar interacciones.
+</details>
 </details>
