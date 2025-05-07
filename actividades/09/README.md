@@ -296,6 +296,13 @@ Esta prueba verificará que, después de llamar a `add_user`, efectivamente el m
 
 </details>
 
+Solucion:
+
+Se crea el test de acuerdo al ejercicio:
+
+https://github.com/axvg/CC3S2/blob/981e39bc1cf7a5835b4d3759f8af89f6528b54fa/actividades/09/tests/test_user_manager.py#L48-L59
+
+Aca se realiza mock del `hash_service` para verificar que al agregar usuario se encripta la contraseña (se llama la funcion), para este el mock se pasa en el constructor como dependencia.
 
 <details>
 <summary>
@@ -308,6 +315,15 @@ Realmente, nuestro código ya llama a `hash_service.hash`. Si ejecutamos `pytest
 </details>
 
 
+Solucion:
+
+![03](img/03.png)
+
+El test pasa correctamente, debdio a que el codigo llama al metodo hash al agregar un usuario:
+
+https://github.com/axvg/CC3S2/blob/981e39bc1cf7a5835b4d3759f8af89f6528b54fa/actividades/09/src/user_manager.py#L29-L32
+
+
 <details>
 <summary>
 <h4>
@@ -318,7 +334,7 @@ Paso 3 (Refactor)
 No hay cambios adicionales. El uso de Mocks/Spies simplemente corrobora el comportamiento interno.
 </details>
 
-
+Este paso no se aplica, ya que se prueba el uso de mocks.
 
 ### Iteración 4: Excepción al agregar usuario existente (Stubs/más pruebas negativas)
 
@@ -350,6 +366,14 @@ def test_no_se_puede_agregar_usuario_existente_stub():
 
 Aquí forzamos con una subclase `StubUserManager` que devuelva `True` en `user_exists`, simulando que el usuario “ya existe”. Así aislamos el comportamiento sin importar lo que pase dentro.
 </details>
+
+Solucion:
+
+Se agrega el test:
+
+https://github.com/axvg/CC3S2/blob/3d93a8b0afd2fb9292f8de7539cf5726292be44d/actividades/09/tests/test_user_manager.py#L63-L73
+
+Lo que se fuerza es que `user_exists` retorne `True` para poder probar el error `UserAlreadyExistsError`.
 
 
 <details>
