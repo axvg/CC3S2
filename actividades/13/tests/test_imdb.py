@@ -130,3 +130,60 @@ class TestIMDbDatabase:
         assert resultados["title"] == "Bambi"
         assert resultados["filmAffinity"] == 3
         assert resultados["rottenTomatoes"] == 5
+
+
+    @patch('test_imdb.IMDb.search_titles')
+    def test_search_by_title(self, imdb_mock):
+        """Prueba de búsqueda por título"""
+        imdb_mock.return_value = self.imdb_data["search_title"]
+        imdb = IMDb("k_12345678")
+        resultados = imdb.search_titles("Bambi")
+        assert resultados is not None
+        assert resultados.get("errorMessage") is None
+        assert resultados.get("results") is not None
+        assert resultados["results"][0]["id"] == "tt1375666"
+
+    @patch('test_imdb.IMDb.search_titles')
+    def test_search_with_no_results(self, imdb_mock):
+        imdb_mock.return_value = []
+        imdb = IMDb("key")
+        resultados = imdb.search_titles("Titulo no existente")
+        assert resultados == []
+
+    @patch("models.imdb.requests.get")
+    def test_search_with_no_results_2(self, imdb_mock):
+        imdb_mock.return_value = Mock(
+            status_code=404
+        )
+        imdb = IMDb("key")
+        resultados = imdb.search_titles("Titulo no existente")
+        assert resultados == {}
+
+    @patch('models.imdb.requests.get')
+    def test_search_by_title_failed(self, imdb_mock):
+        # esto no sirve porque no tiene status_code
+        # imdb_mock.return_value = self.imdb_data["INVALID_API"]
+        imdb_mock.return_value = Mock(
+            spec=Response,
+            status_code=200,
+            json=Mock(return_value=self.imdb_data["INVALID_API"])
+        )
+        imdb = IMDb(apikey="bad-key")
+        resultados = imdb.search_titles("Bambi")
+
+        assert resultados is not None
+        assert resultados["errorMessage"] == "Invalid API Key"
+
+    @patch('models.imdb.requests.get')
+    def test_movie_ratings(self, imdb_mock):
+        imdb_mock.return_value = Mock(
+            spec=Response,
+            status_code=200,
+            json=Mock(return_value=self.imdb_data["movie_ratings"])
+        )
+        imdb = IMDb("k_12345678")
+        resultados = imdb.movie_ratings("tt1375666")
+        assert resultados is not None
+        assert resultados["title"] == "Bambi"
+        assert resultados["filmAffinity"] == 3
+        assert resultados["rottenTomatoes"] == 5

@@ -128,6 +128,26 @@ class TestIMDbDatabase:
 
 </details>
 
+Solucion:
+
+La solucion es agregar un metodo test a la clase que su utiliza para probar, en este caso se quiere hacer un mock de `IMDb.searchtitles` (porque se esta importando esto) por lo que para el decorador `@patch` se usa `test_imdb.IMDb.searchtitles` para mockear este metodo en este archivo `test_imdb` (se parcha donde se usa el objeto no donde se define), con esto y el fixture `imdb_data` que tiene `scope=session` puede obtener 
+
+
+```py
+    @patch('test_imdb.IMDb.search_titles')
+    def test_search_by_title(self, imdb_mock):
+        """Prueba de búsqueda por título"""
+        imdb_mock.return_value = self.imdb_data["search_title"]
+        imdb = IMDb("k_12345678")
+        resultados = imdb.search_titles("Bambi")
+        assert resultados is not None
+        assert resultados.get("errorMessage") is None
+        assert resultados.get("results") is not None
+        assert resultados["results"][0]["id"] == "tt1375666"
+```
+
+Nota: dentro del archivo json se tiene el campo `search_title` para obtener la respuesta correcta
+
 <details>
 <summary>
 <h2>
@@ -176,6 +196,34 @@ def test_search_with_no_results(imdb_mock):
 ```
 
 </details>
+
+Solucion:
+
+Se agregan los siguientes tests que utilizan distintos mocks:
+
+```py
+    @patch('test_imdb.IMDb.search_titles')
+    def test_search_with_no_results(self, imdb_mock):
+        imdb_mock.return_value = []
+        imdb = IMDb("key")
+        resultados = imdb.search_titles("Titulo no existente")
+        assert resultados == []
+```
+
+Aca se parcha el metodo `search_titles` con un array vacio para comparar el resultado de una busqueda con un titulo que no existe en la base de datos.
+
+```py
+    @patch("models.imdb.requests.get")
+    def test_search_with_no_results_2(self, imdb_mock):
+        imdb_mock.return_value = Mock(
+            status_code=404
+        )
+        imdb = IMDb("key")
+        resultados = imdb.search_titles("Titulo no existente")
+        assert resultados == {}
+```
+
+Aca se hace parche al metodo `get` de la libreria `requests` dentro de la clase `imdb`, modulo `models`, esto es porque `get` se utiliza aca, se agrega un objeto falso `mock` con el atributo de `status_code=404, que dara como resultado un diccionario vacio para las busquedas en la prueba
 
 <details>
 <summary>
@@ -236,6 +284,30 @@ def test_search_by_title_failed(imdb_mock):
 ```
 
 </details>
+
+Solucion:
+
+Para esto se agregara el test:
+
+```py
+
+    @patch('models.imdb.requests.get')
+    def test_search_by_title_failed(self, imdb_mock):
+        # esto no sirve porque no tiene status_code
+        # imdb_mock.return_value = self.imdb_data["INVALID_API"]
+        imdb_mock.return_value = Mock(
+            spec=Response,
+            status_code=200,
+            json=Mock(return_value=self.imdb_data["INVALID_API"])
+        )
+        imdb = IMDb(apikey="bad-key")
+        resultados = imdb.search_titles("Bambi")
+
+        assert resultados is not None
+        assert resultados["errorMessage"] == "Invalid API Key"
+```
+
+Similar al paso anterior, esto parcha el metodo `get` pero tambien usa `spec=Response` para simular la respuesta HTTP y dar un respuesta con un mensaje de error obtenido del json leido en el fixture inicial para leer el json que esta en `feature`. Se simula que se da una key mala y el mensaje indica eso
 
 <details>
 <summary>
@@ -305,8 +377,29 @@ def test_movie_ratings(imdb_mock):
 
 </details>
 
+Para este paso se hace un parche similar al anterior pero obtenemos el atributo de `movie_ratings` del archivo json leido:
+
+```py
+    @patch('models.imdb.requests.get')
+    def test_movie_ratings(self, imdb_mock):
+        imdb_mock.return_value = Mock(
+            spec=Response,
+            status_code=200,
+            json=Mock(return_value=self.imdb_data["movie_ratings"])
+        )
+        imdb = IMDb("k_12345678")
+        resultados = imdb.movie_ratings("tt1375666")
+        assert resultados is not None
+        assert resultados["title"] == "Bambi"
+        assert resultados["filmAffinity"] == 3
+        assert resultados["rottenTomatoes"] == 5
+```
+
+Aca tambien parchamos el metodo `requests.get` que se encuentra en `models.imdb`, se utiliza tambien un `Mock(spec=Response,...)` para simular la respuesta HTTP y se comparan datos como si se llamara a la API de IMDb.
+
 ---
 
+<details>
 #### Solución Completa: `test_imdb.py`
 
 A continuación se presenta la versión completa del archivo `test_imdb.py` con todos los casos de prueba implementados utilizando mocking y patching.
@@ -453,3 +546,4 @@ Esperamos que estés viendo el patrón con el mocking. Primero, usas el decorado
 También aprendiste cómo usar objetos Mock para imitar otras clases como la clase `Response`, para controlar cómo se comportan y qué retornan. Incluso mockeaste la función `json()` en la clase `Response` mockeada para controlar lo que retornaba.
 
 Tu próximo desafío es aplicar estas técnicas en tus proyectos para mockear cualquier dependencia externa durante las pruebas, de manera que puedas estar seguro de que estás probando el comportamiento de tu propio código, y no el servicio de otra persona.
+</details>
