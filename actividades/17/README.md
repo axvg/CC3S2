@@ -48,6 +48,25 @@ En este ejercicio, aprenderás cómo configurar un Kanban board usando GitHub Pr
 
 </details>
 
+Solucion:
+
+La creacion de este proyecto se realizo en el siguiente link: [Devops-Agile Project](https://github.com/users/Chriss5-2/projects/3)
+
+El Kanban board tiene las siguientes columnas pedidas:
+
+![01](img/01.png)
+
+![02](img/02.png)
+
+La definicion de cada columna es:
+
+- Backlog: Son historias que se realizaran, tienen una prioridad en el orden en el que aparecen.
+- Icebox: Son historias que puedne estar en Backlog pero no se sabe si seran trabajadas en corto plazo, pueden ser errores de baja prioridad.
+- Product Backlog: Historias con prioridad, son las siguientes actividades a realizar. Las que estan mas arriba se realizaran primero y se usaran en iteraciones (Scrum).
+- In Progress: Historias que tienen un Pull Request asignado y se estan trabajando.
+- Review/QA: Historias cuyo Pull Request esta siendo revisado, con pruebas que se estan realizando por el equipo de QA o tests adicionales.
+- Done: Historias resueltas, el Pull Request y su codigo ha sido mergeado a master (main).
+
 <details>
 <summary>
 <h2>Parte 2</h2>
@@ -84,6 +103,47 @@ Ahora deberías tener una nueva carpeta en tu repositorio llamada `.github/ISSUE
 Ahora tienes una issue template que puedes usar para todos tus repositorios de GitHub en los que necesites escribir historias para usar en el Kanban board. Cuando creemos issues en los laboratorios futuros, esta template te guiará sobre qué información es necesaria para crear tu historia de usuario.
 
 </details>
+
+Solucion:
+
+De acuerdo al template mostrado, se usara este para crear issues:
+
+```md
+---
+name: User Story
+about: Describe this issue template's purpose here.
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+## User story
+
+**As a** _(specificrole -e.g, "developer," "admin," "customer")_
+**I need** _(clear functionalit y or feature needed)_
+**So that** _(explain the value or business reason for this feature)_
+
+---
+
+## **Context & Assumptions**
+- _Listany know constraint, assumptions, or dependencies_
+- _Mention realted user stories or issues (if applicable)._
+
+---
+## Aceptance criteria
+```
+Scenario: <Short Description>
+Given <initial context or system state>
+When <user performs an action>
+Then <expected outcome or behavior>
+And <optional additional conditions>
+```
+```
+
+Este archivo markdown se crea en el directorio `.github/ISSUE_TEMPLATE` con el nombre `user_story.md`. Cuando Github detecta archivos markdown en este directorio al crear issues se agrega la siguiente opcion:
+
+![03](img/03.png)
 
 <details>
 <summary>
@@ -172,6 +232,16 @@ En este ejercicio, moverás issues entre columnas para recrear el Kanban board d
 5. Deja las historias restantes en la columna **New Issues** por ahora. Las moveremos en un laboratorio posterior.
 
 </details>
+
+Solucion:
+
+Para eta parte se crean 11 historias. Al inicio estas apareceran en la columna `New Issues` pero se moveran a columna `Product Backlog` y columna `Icebox`, las otras actividades se dejaran en la columna inicial.
+
+![04](img/04.png)
+
+Para que los issues (historias) creadas aparezcan este Kanban board se necesita que en esta opcion este asignado a nuestro proyecto `Devops-agile`:
+
+![05](img/05.png)
 
 <details>
 <summary>
@@ -295,6 +365,14 @@ Al final de este ejercicio, tu Kanban board debería verse así: [Ejemplo de tab
 
 </details>
 
+Solucion:
+
+Para este paso, en las historias que estan en `Product Backlog` como seran las proximas historias a realizar, se necesita informacion para que el desarrollador sepa que acciones realizar y que criterios seran los cubiertos con el codigo que realizara, la informacion a llenar esta definida en el template del paso anterior. De esta manera se tendra un issue de Github con esta informacion:
+
+![06](img/06.png)
+
+Ademas, como estos issues son nuevos features, se agrega las etiquetas `enhancement` y para el despliegue a la nube `techincal debt` (esta necesita ser creada porque no viene automicamente en Github Projects).
+
 ### Ejercicios
 
 <details>
@@ -314,6 +392,12 @@ Al final de este ejercicio, tu Kanban board debería verse así: [Ejemplo de tab
 
 </details>
 
+Solucion:
+
+Para crear un Epic en Github Project, se creara un issue y se asignara el titulo con `Epic: Gestión de Contadores`, dentro de la descripcion de esta issue se pondran las dependencias para esta Epic, en este caso se usa la sintaxis de Github Project, esto es, para enlazar a esta Epic la issue `Need a service that has a counter #3`, solo se agrega `#3` y automaticamente se enlaza en el formato markdown de Github. Ademas se usan checkbox para mostrar si una issue esta cerrada o abierta. La Epic quedara de la siguiente manera:
+
+![07](img/07.png)
+
 <details>
 <summary>
 <h2>Ejercicio 2: Uso avanzado de etiquetas (labels) para priorización y estado</h2>
@@ -331,6 +415,22 @@ Al final de este ejercicio, tu Kanban board debería verse así: [Ejemplo de tab
 **Resultado esperado:** Las historias de usuario tendrán etiquetas que indiquen tanto su prioridad como su estado actual, facilitando la gestión del flujo de trabajo.
 
 </details>
+
+Solucion:
+
+Para este ejercicio, se agregaran las etiquetas en este link: [https://github.com/Chriss5-2/TempRepo/issues/labels](https://github.com/Chriss5-2/TempRepo/issues/labels)
+
+Aca aparecera una lista de las labels que se tienen para este proyecto.
+
+![08](img/08.png)
+
+Para agregar un label, se usa el boton `New Issue` y se abre el siguiente menu:
+
+![09](img/09.png)
+
+Para una nueva label se necesita darle un nombre, color y opcionalmente una descripcion. Se agregan las etiquetas para esta actividad:
+
+![10](img/10.png)
 
 <details>
 <summary>
@@ -365,6 +465,144 @@ Al final de este ejercicio, tu Kanban board debería verse así: [Ejemplo de tab
 
 </details>
 
+Solucion:
+
+Se creara un archivo de workflow dentro de la carpeta `.github/workflows`. Como se quiere cambiar el estado de un issue en Github, cuando se tiene un Pull Request asignado, se activara en esta accion:
+
+```yml
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, review_requested]
+```
+
+Es decir, cuando una Pull Request se inicie o se suba codigo, tambien cuando se pida una review.
+
+```yml
+jobs:
+  manage-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: update linked issue status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const script = require('./script.js')
+            return await script({github, context, core})
+```
+
+Como se requiere el manejo de Github Project, se necesita autorizacion mediante un personal token. Este se pondra como Secret en este repositorio con el nombre `GH_TOKEN`. Para mover las issues se usara un script que usara la api de Github GraphQL, como se usa un archivo dentro del repositorio se necesita `actions/checkout@v4` y como usamos un script en Javascript se usa `actions/github-script@v7`, al script le pasamos los parametros de github, context y core que son usados para usar las APIs de Github.
+
+```js
+      const linkedIssueQuery = `
+        query($pr:ID!) {
+          node(id: $pr) {
+            ... on PullRequest {
+              closingIssuesReferences(first:1, userLinkedOnly:false) {
+                totalCount
+                nodes {
+                  id
+                  number
+                  projectItems(first: 5) {
+                    nodes {
+                      id
+                      project {
+                        id
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }`;
+```
+
+Dado el Pull Request se realiza una consulta para obtener los issues que esta relacionados al PR (Pull Request)
+
+```js
+const linkedIssueResult = await github.graphql(linkedIssueQuery, { pr: PR_ID });
+
+const linkedIssues = linkedIssueResult.node.closingIssuesReferences.nodes;
+if (!linkedIssues || linkedIssues.length === 0) {
+   return "no linked issues!!";
+}
+
+const linkedIssue = linkedIssues[0];
+const issueNumber = linkedIssue.number;
+const projectItem = linkedIssue.projectItems.nodes[0];
+const LINKED_ISSUE_ID = projectItem.id;
+const PROJECT_ID = projectItem.project.id;
+```
+
+Se obtiene el issue relacionado a este PR (primero)
+
+
+```js
+  const fieldDataQuery = `
+        query($projectId:ID!) {
+          node(id: $projectId) {
+            ... on ProjectV2 {
+              fields(first:20) {
+                nodes {
+                  ... on ProjectV2SingleSelectField {
+                    id
+                    name
+                    options {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }`;
+
+      const fieldDataResult = await github.graphql(fieldDataQuery, { projectId: PROJECT_ID });
+      const fields = fieldDataResult.node.fields.nodes;
+
+      const statusField = fields.find(field => field.name === "Status");
+      const STATUS_FIELD_ID = statusField.id;
+```
+
+Aca se obitene los campos de los issues y el campo de estado (con nombre `Status`)
+
+```js
+ let inProgressOption = statusField.options.find(option =>
+        option.name === "In Progress"
+      );
+      const IN_PROGRESS_OPTION_ID = inProgressOption.id;
+
+      const updateMutation = `
+        mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
+          updateProjectV2ItemFieldValue(input: {
+            projectId: $projectId,
+            itemId: $itemId,
+            fieldId: $fieldId,
+            value: {
+              singleSelectOptionId: $optionId
+            }
+          }) {
+            projectV2Item {
+              id
+              updatedAt
+            }
+          }
+        }`;
+
+      await github.graphql(updateMutation, {
+        projectId: PROJECT_ID,
+        itemId: LINKED_ISSUE_ID,
+        fieldId: STATUS_FIELD_ID,
+        optionId: IN_PROGRESS_OPTION_ID
+      });
+```
+
+Se obtiene el id del estado `In Progress` y se realiza una operacion de UPDATE con la API de GraphQL, usando el id del proyecto, id del item, id del campo del estado, y la opcion a la que estamos actualizando (In Progress).
+
 <details>
 <summary>
 <h2>Ejercicio 5: Refinamiento de backlog basado en comentarios de los stakeholders</h2>
@@ -383,6 +621,10 @@ Al final de este ejercicio, tu Kanban board debería verse así: [Ejemplo de tab
 
 </details>
 
+Solucion: 
+
+Para este ejercicio, se crea una nueva historia (con informacion necesario y criterios de aceptacion). Esta historia sera la nueva prioridad dentro de la columna `Product Backlog` por lo que estara encima de todas.
+
 <details>
 <summary>
 <h2>Ejercicio 6: Análisis del flujo de trabajo usando el Kanban board</h2>
@@ -399,3 +641,13 @@ Al final de este ejercicio, tu Kanban board debería verse así: [Ejemplo de tab
 **Resultado esperado:** Obtención de un análisis detallado del flujo de trabajo y una lista de posibles acciones para mejorar la eficiencia del equipo, de acuerdo a lo que se presenta en github.
 
 </details>
+
+Se va a la opcion `Insights` de este proyecto, dentro de esta se tienen graficos como `Average Time` (tiempo promedio) por columna:
+
+![12](img/12.png)
+
+Ademas del numero de items en cada columna `Status Chart`:
+
+![13](img/13.png)
+
+Los cuellos de botella para la primera grafica son los `Icebox` y columnas `Backlog`, se podria mejorar si se clasifican mejor las historias en `Backlog` y se prioriza correctamente con las historias que son mas prioritarias y que ocupen menos horas. En la segunda columna se puede ver que hay mas historias en `Product Backlog` por lo que se necesita solucionar la mayor cantidad en la proxima iteracion.
