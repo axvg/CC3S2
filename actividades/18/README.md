@@ -95,6 +95,20 @@ En este ejercicio, crearás un sprint plan. Asignaremos puntos de historia estim
 
 </details>
 
+Solucion:
+
+Para esta parte, cada integrante del grupo agrego los puntos de historia para cada issue en Github. El sprint se crea con estas 3 historias y 2 adicionales que tendran puntos pero sin sprint.
+
+Para seleccionar los sprint de cada issue se usa el menu de Github Project y se agrega los dos campos: puntos y sprint. Ademas se puede agregar fecha de inicio y final que esten dentro de las fechas del Sprint seleccionado.
+
+Los issues quedara de la siguiente forma:
+
+![01](img/01.png)
+
+Los 3 issues quedaran en la columna Sprint Backlog:
+
+![02](img/02.png)
+
 <details>
 <summary>
 <h2>Parte 2</h2>
@@ -169,6 +183,16 @@ En este ejercicio, simularás el flujo de trabajo diario de un desarrollador en 
 
 </details>
 
+Solucion:
+
+Para esta parte, cada integrante uso un issue de la parte anterior, el proyecto se encuentra en este [link](https://github.com/users/Chriss5-2/projects/3). Se siguio el flujo normal de una issue hasta su resolucion, esto es:
+
+Sprint Backlog ->  In Progress (donde se crea una PR) -> Review/QA (se corren las pruebas necesarias para cumplir las expectativas del feature y cerrar el issue) -> Done
+
+![03](img/03.png)
+
+Al terminar las 2 primeras historias,el sprint se termina y queda una tercera por terminar (aunque se trabajo en esta y se usaron puntos), esta debe realizarse en la siguiente iteracion.
+
 <details>
 <summary>
 <h2>Parte 3</h2>
@@ -218,6 +242,14 @@ En este ejercicio, configurarás tu burndown chart para mostrar el estado de las
 
 </details>
 
+Solucion:
+
+Para esta parte se realiza la creacion de este grafico, en el siguiente menu [https://github.com/users/Chriss5-2/projects/3/insights/7](https://github.com/users/Chriss5-2/projects/3/insights/7). 
+
+El grafico obtenido es el siguiente, donde se muestra las historias del sprint 1 y las historias que se realizaran en la siguiente iteracion (en la columna Product Backlog). La altura de las columnas son por los puntos de historia, de esta manera, tenemos 15 puntos para la columna del sprint 1.
+
+![04](img/04.png)
+
 <details>
 <summary>
 <h2>Parte 4</h2>
@@ -261,3 +293,9 @@ En este ejercicio, gestionarás las historias no terminadas en el sprint. Estas 
 9. Asegúrate de que la historia esté en la parte superior de la columna Product Backlog para ser seleccionada en el próximo sprint.
 
 </details>
+
+Solucion:
+
+Del paso 2, se tuvo un issue pendiente. En este caso, el sprint 1 termino y la historia `Deploy service to the cloud` aun no estaba resuelta. Para solucionarla se crea una nueva historia (issue) y se agrega la etiqueta `technical debt` (deuda tecnica). Como se usaron history points en el paso 2, para esta historia se agregan los puntos restantes (3) y se agrega a la columna Product Backlog para realizarla en la proxima iteracion.
+
+![05](img/05.png)
