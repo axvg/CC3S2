@@ -88,6 +88,28 @@ Conocer el estado actual de la cobertura y detectar áreas del código que podr�
 
 </details>
 
+Solucion:
+
+Se agrega y modifica el archivo `Makefile` en el directorio en `actividades` de esta manera se puede ejecutar tests por actividad con el comando:
+
+```sh
+make test ACTIVITY=15
+```
+
+Para obtener los reportes de coverage para las actividades de 11 a 16, se usa el comando:
+
+```sh
+make coverage_individual
+```
+
+Se obtienen directorios `htmlcov_n`, donde n es la actividad. Los reportes muestra el porcentaje y lineas de codigo cubiertos por tests, de la siguiente manera.
+
+![00](img/00.png)
+
+![01](img/01.png)
+
+En verde se muestran las lineas cubiertas, en rojo las lineas que faltan testear.
+
 <details>
 <summary><strong>Ejercicio 2: Ampliar las pruebas para mejorar la cobertura</strong></summary>
 
@@ -123,6 +145,122 @@ Aumentar la cobertura de pruebas escribiendo tests que exploren casos adicionale
    - Verificar que el formato del string sea exactamente el esperado.
 
 </details>
+
+Solucion:
+
+Se agregan tests en la actividad con menor coverage 12, que tiene coverage de 84%:
+
+![02](img/02.png)
+
+Los metodos que faltan probar son los que menciona en el ejercicio, se crean los tests:
+
+- `to_dict`: para verificar que se incluyan todas las columnas y para asegurar que sean tipos de datos esperados
+
+```py
+   def test_to_dict(self):
+      data = ACCOUNT_DATA[0]
+      account = Account(**data)
+      account.create()
+      result = account.to_dict()
+
+      expected_cols = ['id', 'name', 'email', 'phone_number', 'disabled', 'date_joined']
+      for key in expected_cols:
+         assert key in result
+
+      assert result['name'] == data['name']
+      assert result['email'] == data['email']
+      assert result['phone_number'] == data.get('phone_number')
+      assert result['disabled'] == data.get('disabled', False)
+```
+
+- `from_dict`: para probar casos con diccionarios del archivo JSON y verificar el comportamiento
+
+```py
+def test_from_dict(self):
+    account = Account()
+    data = ACCOUNT_DATA[0]
+    account.from_dict(data)
+
+    assert account.name == data['name']
+    assert account.email == data['email']
+    assert account.phone_number == data.get('phone_number')
+    assert account.disabled == data.get('disabled', False)
+```
+
+- `create`: para verificar que se genere un ID automaticamente tras la creacion
+
+```py
+def test_create_generates_id(self):
+    data = ACCOUNT_DATA[0]
+    account = Account(**data)
+    assert account.id is None
+
+    account.create()
+    assert account.id is not None
+    assert isinstance(account.id, int)
+```
+
+- `update`: para probar update exitoso y obtener el error si no hay ID en la cuenta.
+
+```py
+def test_update_success(self):
+    data = ACCOUNT_DATA[0]
+    account = Account(**data)
+    account.create()
+
+    original_id = account.id
+    account.name = "nombre2"
+    account.email = "mail2@mail.com"
+
+    account.update()
+
+    updated_account = Account.find(original_id)
+    assert updated_account.name == "nombre2"
+    assert updated_account.email == "mail2@mail.com"
+
+def test_update_without_id_raises_error(self):
+    data = ACCOUNT_DATA[0]
+    account = Account(**data)
+    with pytest.raises(DataValidationError) as err:
+        account.update()
+
+    assert "update sin un ID" in str(err.value)
+```
+
+- `delete`: para confirmar que tras la eliminacion la cuenta ya no este disponible
+
+```py
+def test_delete(self):
+    data = ACCOUNT_DATA[0]
+    account = Account(**data)
+    account.create()
+    account_id = account.id
+
+    assert Account.find(account_id) is not None
+
+    account.delete()
+    assert Account.find(account_id) is None
+    assert len(Account.all()) == 0
+```
+
+- `__repr__`: para verificar el formato del string de representacion, se usa el metodo `repr` de python, que tiene comportamiento como el `__repr__` definido en la clase.
+
+```py
+def test_repr(self):
+    data = ACCOUNT_DATA[0]
+    account = Account(**data)
+    assert repr(account) == f"<Account {repr(data['name'])}>"
+```
+
+Despues de agregar estos tests, el coverage aumenta significativamente:
+
+![02](img/02.png)
+
+Los tests ejecutados muestran que todos pasan correctamente y la cobertura ha mejorado a 100% para esta actividad.
+
+![03](img/03.png)
+
+![04](img/04.png)
 
 <details>
 <summary><strong>Ejercicio 3: Ampliación y optimización del Makefile</strong></summary>
@@ -168,6 +306,65 @@ Automatizar no solo la ejecución de pruebas y generación de reportes, sino tam
 
 </details>
 
+Solucion:
+
+Las mejoras implementadas al Makefile para automatizar procesos son las siguientes:
+
+- `lint`: Se agrega para ejecutar analisis estatico (lint) con flake8
+
+```makefile
+.PHONY: lint
+lint:
+	@echo "Ejecutando flake8..."
+	flake8 .
+```
+
+- `test_all`: Se ejecuta tests en todas las actividades
+
+```makefile
+.PHONY: test_all
+test_all:
+	@echo "Ejecutando pruebas en TODAS las actividades..."
+	@for activity in $(ACTIVITIES); do \
+	   echo "=========================================="; \
+	   echo "EJECUTANDO PRUEBAS EN $$activity"; \
+	   echo "=========================================="; \
+	   cd $$activity && PYTHONWARNINGS="ignore::DeprecationWarning" pytest . || exit 1; \
+	   cd - >/dev/null; \
+	done
+```
+
+- `coverage_individual`: Se implementa para generar reportes de cobertura por actividad, estos reportes son archivos html, como los mostrados en el ejericcio anterior
+
+```makefile
+.PHONY: coverage_individual
+coverage_individual:
+	@echo "Ejecutando cobertura individual para cada actividad..."
+	@for activity in $(ACTIVITIES); do \
+	   echo "=========================================="; \
+	   echo "Generando cobertura para $$activity"; \
+	   echo "=========================================="; \
+	   cd $$activity && coverage erase && \
+	   PYTHONWARNINGS="ignore::DeprecationWarning" coverage run --source=. -m pytest . && \
+	   coverage report -m && \
+	   coverage html -d htmlcov_$$activity || exit 1; \
+	   cd - >/dev/null; \
+	done
+```
+
+- `clean`: Se mejora para eliminar todos los archivos temporales
+
+```makefile
+.PHONY: clean
+clean:
+	@echo "Eliminando archivos de caché y reportes..."
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	rm -rf .pytest_cache
+	rm -rf htmlcov htmlcov_*
+	coverage erase
+	@echo "Limpieza completa."
+```
+
 <details>
 <summary><strong>Ejercicio 4: Integración y pruebas con una base de datos temporal</strong></summary>
 
@@ -203,6 +400,44 @@ Implementar pruebas de integración utilizando una base de datos temporal para e
 
 </details>
 
+Solucion:
+
+Se configura una base de datos temporal para evitar usar datos cargados del archivo `test.db` durante los tests, para esto:
+
+- Se modifica el archivo `models/__init__.py` para usar SQLite en memoria durante pruebas
+
+```py
+import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+if os.environ.get('TESTING'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+```
+
+- Se setea la variable de entorno TESTING en `test_account.py` con valor 1.
+
+```py
+import os
+os.environ['TESTING'] = '1'
+
+@pytest.fixture(scope="module", autouse=True)
+def setup_database():
+    """Configura la base de datos temporal antes y despues de todas las pruebas"""
+    db.create_all()
+    yield
+    db.session.close()
+```
+
+Los tests ahora se ejecutan en memoria, sin usar y leer el archivo `test.db`.
+
+Los tests ejecutados confirman que la base de datos temporal funciona correctamente y no se crean archivos `.db` en el sistema.
+
 <details>
 <summary><strong>Ejercicio 5: Refactorización y adición de funcionalidades</strong></summary>
 
@@ -235,3 +470,59 @@ Extender la funcionalidad del modelo y, a su vez, la cobertura de pruebas.
    - Ejecuta nuevamente `make test` y `make coverage_individual` para verificar que el nuevo método está completamente cubierto por pruebas.
 
 </details>
+
+Solucion:
+
+Se extiende la funcionalidad de la clase `Account` agregando validacion de datos, se verifica el formato de email y que el nombre no este vacio, para esto se usa regex y que no sea `None`:
+
+```py
+import re
+
+   def validate(self):
+      if not self.name:
+         raise DataValidationError("El nombre no puede estar vacio")
+      if not self.email:
+         raise DataValidationError("El email es requerido")
+      if not re.match(r"[^@]+@[^@]+\.[^@]+", self.email):
+         raise DataValidationError("El email no es valido")
+```
+
+Para probar este nuevo metodo, se crean tests para todos los casos.
+
+```py
+   def test_validate_success(self):
+      data = ACCOUNT_DATA[0]
+      account = Account(**data)
+      account.validate()
+
+   def test_validate_empty_name(self):
+      data = ACCOUNT_DATA[0]
+      data['name'] = ""
+      account = Account(**data)
+
+      with pytest.raises(DataValidationError) as err:
+         account.validate()
+      assert "nombre no puede estar vacio" in str(err.value)
+
+   def test_validate_invalid_email(self):
+      data = ACCOUNT_DATA[0]
+      data['email'] = "1234"
+      account = Account(**data)
+
+      with pytest.raises(DataValidationError) as err:
+         account.validate()
+      assert "email no es valido" in str(err.value)
+
+   def test_validate_missing_email(self):
+      data = ACCOUNT_DATA[0]
+      data['email'] = None
+      account = Account(**data)
+
+      with pytest.raises(DataValidationError) as err:
+         account.validate()
+      assert "email es requerido" in str(err.value)
+```
+
+Para verificar que funciona correctamente, se ejecuta `make test` (ya tiene la actividad 15 por defecto), con esto verificamos que los tests corren correctamente y se tiene un coverage de 100%.
+
+![05](img/05.png)

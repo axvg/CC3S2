@@ -2,15 +2,24 @@ import json
 import pytest
 import sys
 import os
+from datetime import date
 
 # Ajustamos el path para que 'models' sea importable
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from models import db
+os.environ['TESTING'] = '1'
+
+from models import db, app
 from models.account import Account, DataValidationError
 
 # Variable global para almacenar los datos del fixture
 ACCOUNT_DATA = {}
+
+# fix para evitar error de context : Working outside of application context.
+@pytest.fixture(scope="module", autouse=True)
+def app_context():
+    with app.app_context():
+        yield
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_database():
@@ -30,6 +39,8 @@ class TestAccountModel:
         global ACCOUNT_DATA
         with open('tests/fixtures/account_data.json') as json_data:
             ACCOUNT_DATA = json.load(json_data)
+        for record in ACCOUNT_DATA:
+            record["date_joined"] = date.today()
         print(f"ACCOUNT_DATA cargado: {ACCOUNT_DATA}")
 
     @classmethod
@@ -161,3 +172,39 @@ class TestAccountModel:
         expected = f"<Account '{data['name']}'>"
         assert representation == expected
 
+    def test_validate_success(self):
+        data = ACCOUNT_DATA[0]
+        account = Account(**data)
+        account.validate()
+
+    def test_validate_empty_name(self):
+        data = ACCOUNT_DATA[0]
+        data['name'] = ""
+        account = Account(**data)
+
+        with pytest.raises(DataValidationError) as err:
+            account.validate()
+        assert "nombre no puede estar vacio" in str(err.value)
+
+    def test_validate_invalid_email(self):
+        data = ACCOUNT_DATA[0]
+        data['name'] = "user"
+        data['email'] = "1234"
+        account = Account(**data)
+        # print("data -->", repr(data))
+        with pytest.raises(DataValidationError) as err:
+            account.validate()
+        assert "email no es valido" in str(err.value)
+
+    def test_validate_missing_email(self):
+        data = ACCOUNT_DATA[0]
+        data['email'] = None
+        account = Account(**data)
+
+        with pytest.raises(DataValidationError) as err:
+            account.validate()
+        assert "email es requerido" in str(err.value)
+
+    def test_db_configuration(self):
+        assert app.config['SQLALCHEMY_DATABASE_URI'] == 'sqlite:///:memory:'
+        assert os.environ.get('TESTING') == '1'

@@ -61,6 +61,21 @@ Ahora podemos proceder a modificar el código.
 
 </details>
 
+Solucion:
+
+Se realizo la ejecucion de tests, pero hubo errores de `Working outside of application context`, para solucionarlo se agrego:
+
+```py
+@pytest.fixture(scope="session", autouse=True)
+def app_context():
+    with app.app_context():
+        yield
+```
+
+porque para usar la db se necesita el context de la aplicacion Flask, se usa session porque se usara a lo largo de los tests.
+
+Al agregar esto y ejecutar se obtienen que la covertura es 100% y todos los tests estan OK.
+
 <details>
 <summary>
 <h2>
@@ -117,6 +132,14 @@ class AccountFactory(factory.Factory):
 
 </details>
 
+Solucion:
+
+Esta clase es creada dentro del archivo factories.py:
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/factories.py#L15-L26
+
+Usa la libreria `factory_boy` para obtener campos aleatorios de acuerdo al tipo como `email`, `name`, `phone_number`
+
 <details>
 <summary>
 <h2>
@@ -155,6 +178,13 @@ def test_crear_todas_las_cuentas(self):
 
 </details>
 
+Solucion:
+
+Para usar la clase factory, se importa y para el caso de crear todas las cuentas se usa un loop, dodne agrega una instacia por loop y se usa `create()` para crear la cuenta.
+Esta cuenta tendra datos aleatorios pero solo se busca verificar que todas fueron creadas sin errores.
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L33-L38
+
 <details>
 <summary>
 <h2>
@@ -181,6 +211,18 @@ def test_crear_una_cuenta(self):
 ```
 
 </details>
+
+Solucion:
+
+Aca se prueba la creacion individual de cuenta, tambien se usa los campos aleatorios de factory:
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L40-L44
+
+Se verifica que los campos son aleatorios y que sean unicos en el casos de `email`, asi como esta definido en la clase `Account`:
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/models/account.py#L16-L26
+
+Tambien se verifica la longitud de los campos. Ejemplo que el numero de telefono tenga `32` caracteres de longitud, para esto factory-boy usa numeros de la forma `(460)648-123456`.
 
 <details>
 <summary>
@@ -213,6 +255,12 @@ def test_to_dict(self):
 
 </details>
 
+Solucion:
+
+Se crea una instancia de `AccountFactory()`, y el resultado se convierte a diccionario para verificar que se serializa correctamente.
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L51-L59
+
 <details>
 <summary>
 <h2>
@@ -243,6 +291,14 @@ def test_from_dict(self):
 ```
 
 </details>
+
+Solucion:
+
+Para este test se usa la instacia para pasarlo a diccionario de python y luego comparar los atributos de la clase
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L61-L69
+
+Sin usar `factory-boy` y solo usando `ACCOUNT_DATA` (data estatica en formato json o diccionario) se probaria un caso. Aca se prueban con casos aleatorios por ser una clase `Factory`.
 
 <details>
 <summary>
@@ -275,6 +331,12 @@ def test_actualizar_una_cuenta(self):
 
 </details>
 
+Solucion:
+
+En este paso, se actualiza la prueba `test_actualizar_una_cuenta()`. Se instancia la clase `AccountFactory` en lugar de referencias directas a `Account` o `ACCOUNT_DATA`. Se usa metodo `update()` sea llamado para guardar la instancia en la db.
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L71-L79
+
 <details>
 <summary>
 <h2>
@@ -305,6 +367,12 @@ def test_id_invalido_al_actualizar(self):
 
 </details>
 
+Solucion:
+
+Aca se actualizara la prueba `test_id_invalido_al_actualizar()`. Se usa una instancia `AccountFactory` y se asigna `None` al `id` antes de llamar al metodo `update()`. Con esto se espera que se lance la excepcion `DataValidationError`. Para lo cual se usa `with pytest.raises(DataValidationError)` para validar que se obtiene un error.
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L81-L86
+
 <details>
 <summary>
 <h2>
@@ -333,6 +401,12 @@ def test_eliminar_una_cuenta(self):
 ```
 
 </details>
+
+Solucion:
+
+Se actualiza la prueba `test_eliminar_una_cuenta()`. Se usa una instancia de `AccountFactory` y sea crea la cuenta `create()`, despues se verifica que exista como la unica cuenta creada. Luego se usa el metodo `delete()` y se verifica que no existan cuentas.
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/14/tests/test_account.py#L88-L94
 
 <details>
 <summary>
@@ -411,3 +485,21 @@ Esperamos que ahora tengas una buena comprensión de cómo construir una Factory
 Intenta aplicar lo que has aprendido en tus proyectos personales.  En cualquier lugar donde hayas creado datos estáticos para probar tu código, puedes sustituirlos por factories dinámicas para hacer las pruebas más robustas.
 
 </details>
+
+
+Solucion:
+
+
+Se eliminan las referencias de los datos estaticos y setups ya que se usa las clases Factory, de esta manera se obtienen datos aleatorios para obtener un mayor rango de datos.
+
+Estas referencias a `ACCOUNT_DATA` se cargaban desde un archivo json y se cargan en la db para cada funcion test.
+
+https://github.com/axvg/CC3S2/blob/af5440abe5104b163c9e32d8c45c1c3f56876cc9/actividades/12/tests/test_account.py#L24-L29
+
+Usando instancias de `Factory` clases se evita esto y solo se usa `python` para setear los datos
+
+Al usar la nueva clase en los tests, estos corren correctamente.
+
+Ademas se quita los comentarios de `setup.cfg` para no visualizar warnings.
+
+![00](img/00.png)

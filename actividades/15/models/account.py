@@ -5,6 +5,7 @@ import logging
 from sqlalchemy import Column, Integer, String, Boolean, Date
 from sqlalchemy.sql import func
 from models import db
+import re
 
 logger = logging.getLogger()
 
@@ -82,3 +83,10 @@ class Account(db.Model):
         logger.info(f"Procesando búsqueda para id {account_id} ...")
         return db.session.get(cls, account_id)
 
+    def validate(self):
+        if not self.name:
+            raise DataValidationError("El nombre no puede estar vacio")
+        if not self.email:
+            raise DataValidationError("El email es requerido")
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", self.email):
+            raise DataValidationError("El email no es valido")

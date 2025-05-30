@@ -8,9 +8,16 @@ import os
 # Agrega el directorio raíz del proyecto al PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from models import db
+from models import db, app
 from models.account import Account, DataValidationError
 from factories import AccountFactory
+
+
+# fix para evitar error de context :  Working outside of application context.
+@pytest.fixture(scope="session", autouse=True)
+def app_context():
+    with app.app_context():
+        yield
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
