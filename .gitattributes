@@ -1,0 +1,11 @@
+# normaliza endings, arregla conflictos en devcontainer
+* text=auto
+
+*.sh text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+*.png binary
+*.jpg binary
+*.gif binary
