@@ -4,7 +4,7 @@ variable "app_port" { type = number }
 variable "base_install_path" { type = string }
 variable "global_message_from_root" { type = string }
 variable "python_exe" { type = string }
-variable "connection_string" { type = string }
+# variable "connection_string" { type = string }
 
 locals {
   install_path = "${var.base_install_path}/${var.app_name}_v${var.app_version}"

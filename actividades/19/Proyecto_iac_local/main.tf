@@ -18,7 +18,7 @@ output "ruta_bienvenida" {
 variable "python_executable" {
   description = "Ruta al ejecutable de Python (python o python3)."
   type        = string
-  default     = "C:/Users/kapum/DS/bdd/Scripts/python.exe"
+  default     = "python3" # for linux or git bash
 }
 
 locals {
