@@ -20,6 +20,7 @@ def render_and_write(env):
     )
 
     # 2) Genera main.tf.json SÓLO con recursos
+    # fix para utilizar variables de cada app en network.tf.json
     config = {
         "resource": [
             {
@@ -28,8 +29,8 @@ def render_and_write(env):
                         env["name"]: [
                             {
                                 "triggers": {
-                                    "name":    env["name"],
-                                    "network": env["network"]
+                                    "name":    "${var.name}",
+                                    "network": "${var.network}"
                                 },
                                 "provisioner": [
                                     {
@@ -54,9 +55,10 @@ def render_and_write(env):
 
 if __name__ == "__main__":
     # Limpia entornos viejos (si quieres)
-    if os.path.isdir(OUT_DIR):
-        import shutil
-        shutil.rmtree(OUT_DIR)
+    # to verify state changes don't delete directories
+    # if os.path.isdir(OUT_DIR):
+    #     import shutil
+    #     shutil.rmtree(OUT_DIR)
 
     for env in ENVS:
         render_and_write(env)
