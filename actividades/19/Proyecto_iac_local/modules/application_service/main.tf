@@ -4,6 +4,7 @@ variable "app_port" { type = number }
 variable "base_install_path" { type = string }
 variable "global_message_from_root" { type = string }
 variable "python_exe" { type = string }
+variable "connection_string" { type = string }
 
 locals {
   install_path = "${var.base_install_path}/${var.app_name}_v${var.app_version}"
@@ -21,11 +22,12 @@ resource "null_resource" "crear_directorio_app" {
 data "template_file" "app_config" {
   template = file("${path.module}/templates/config.json.tpl")
   vars = {
-    app_name_tpl    = var.app_name
-    app_version_tpl = var.app_version
-    port_tpl        = var.app_port
-    deployed_at_tpl = timestamp()
-    message_tpl     = var.global_message_from_root
+    app_name_tpl          = var.app_name
+    app_version_tpl       = var.app_version
+    port_tpl              = var.app_port
+    deployed_at_tpl       = timestamp()
+    message_tpl           = var.global_message_from_root
+    connection_string_tpl = var.connection_string
   }
 }
 

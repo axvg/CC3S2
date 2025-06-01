@@ -16,3 +16,8 @@ variable "mensaje_global" {
   default     = "Configuración gestionada por Terraform."
   sensitive   = true # Para demostrar
 }
+
+variable "connection_string" {
+  type    = string
+  default = ""
+}
