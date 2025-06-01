@@ -28,7 +28,7 @@ locals {
     # Se pueden añadir más líneas fácilmente
     # app3 = { version = "2.1.0", port = 8083 }
     # app4 = { version = "1.0.0", port = 8084 }
-    database_connector = {
+    database = {
       version           = "1.0.0"
       port              = 1234
       connection_string = ""
@@ -93,14 +93,4 @@ resource "null_resource" "check_all_healths" {
     EOT
     interpreter = ["bash", "-c"]
   }
-}
-
-module "config_entorno_principal" {
-  source                = "./modules/environment_setup"
-  base_path             = "${path.cwd}/generated_environment"
-  nombre_entorno_modulo = var.nombre_entorno
-}
-
-output "readme_principal" {
-  value = module.config_entorno_principal.ruta_readme_modulo
 }
