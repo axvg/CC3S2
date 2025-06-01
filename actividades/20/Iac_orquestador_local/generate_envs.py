@@ -6,6 +6,10 @@ ENVS = [
     {"name": f"app{i}", "network": f"net{i}"} for i in range(1, 11)
 ]
 
+ENVS2 = [
+    {"name": f"app{i}", "network": f"net{i}"} for i in range(1, 51)
+]
+
 MODULE_DIR = "modules/simulated_app"
 OUT_DIR    = "environments"
 
@@ -51,6 +55,63 @@ def render_and_write(env):
     }
 
     with open(os.path.join(env_dir, "main.tf.json"), "w") as fp:
+        json.dump(config, fp, sort_keys=True, indent=4)
+
+def render_and_write_2(env):
+    env_dir = os.path.join(OUT_DIR, env["name"])
+    dev_dir = os.path.join(env_dir, "dev")
+    prod_dir = os.path.join(env_dir, "prod")
+
+    os.makedirs(env_dir, exist_ok=True)
+    os.makedirs(dev_dir, exist_ok=True)
+    os.makedirs(prod_dir, exist_ok=True)
+
+    # 1) Copia la definición de variables (network.tf.json)
+    copyfile(
+        os.path.join(MODULE_DIR, "network.tf.json"),
+        os.path.join(dev_dir, "network.tf.json")
+    )
+
+    copyfile(
+        os.path.join(MODULE_DIR, "network.tf.json"),
+        os.path.join(prod_dir, "network.tf.json")
+    )
+
+    # 2) Genera main.tf.json SÓLO con recursos
+    # fix para utilizar variables de cada app en network.tf.json
+    config = {
+        "resource": [
+            {
+                "null_resource": [
+                    {
+                        env["name"]: [
+                            {
+                                "triggers": {
+                                    "name":    "${var.name}",
+                                    "network": "${var.network}"
+                                },
+                                "provisioner": [
+                                    {
+                                        "local-exec": {
+                                            "command": (
+                                                f"echo 'Arrancando servidor "
+                                                f"{env['name']} en red {env['network']}'"
+                                            )
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+    with open(os.path.join(dev_dir, "main.tf.json"), "w") as fp:
+        json.dump(config, fp, sort_keys=True, indent=4)
+
+    with open(os.path.join(prod_dir, "main.tf.json"), "w") as fp:
         json.dump(config, fp, sort_keys=True, indent=4)
 
 if __name__ == "__main__":
