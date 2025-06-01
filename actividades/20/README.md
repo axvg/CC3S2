@@ -34,6 +34,23 @@ Después verás cómo Terraform identifica cambios, remedia desvíos manuales y 
 
 </details>
 
+Solucion:
+
+Se realizaron modificaciones, para evitar borrar el archivo lock y state de terraform y solo alterar los archivos .tf.json de cada carpeta de app.
+Ademas se cambio los archivos main.tf.json para que use las variables dentro de cada app.
+
+Despues de aplicar `python3 generate-envs.py` se crearon 10 carpetas en `environments\app*` con archivos main.tf.json y network.tf.json.
+
+En la carpeta `environments/app1`, se ejecuto:
+
+```sh
+terraform init # para descargar librerias de terraform
+terraform plan # para ver los cambios que se realizaran
+terraform apply # para realizar los cambios, en este caso solo se imprimio en el terminal las variables
+```
+
+Ademas se debe usar `terrafrom apply` para que se cree el archivo `terraform.tfstate` que guardar los cambios que se aplicaron y que seran necesarios para la siguiente fase.
+
 <details>
 <summary><strong>Fase 1: Expresando el cambio de infraestructura</strong></summary>
 
@@ -82,6 +99,35 @@ Cuando cambian variables de configuración, Terraform los mapea a **triggers** q
 </details>
 
 </details>
+
+
+Solucion:
+
+Al cambiar el archivo `modules/simulated_app/network.tf.json`, se cambio la variable `network` de `local-network` a `lab-net`.
+
+Se ejecuto el script de python `python3 generate_envs.py` que creo de nuevo los archivso `main` y `network` para cada app.
+
+Dentro de `environments/app1` se verifico que en el archivo `network.tf.json`, la variable `network` cambio de `local-network` a `lab-net`.
+
+Se hizo `terraform plan` y se mostro que hubo un cambio del estado, en este caso el nombre de network:
+
+![00](imgs/00.png)
+
+>  * ¿Cómo interpreta Terraform el cambio de variable?
+
+Terraform lee el valor nuevo al ejecutar `plan`. Si el cambio no requiere reemplazo del recurso, se aplica en sitio (in-place).
+
+>  * ¿Qué diferencia hay entre modificar el JSON vs. parchear directamente el recurso?
+
+Modificar el JSON mantiene la estructura de directorios, si se usara la version anterior (que borraba directorios), se borraria los archivos `.locl` y `.state`, esto rompe la consistencia y causaria drift
+
+>  * ¿Por qué Terraform no recrea todo el recurso, sino que aplica el cambio "in-place"?
+
+Porque evalua si el cambio puede aplicarse sin destruir. Solo recrearia si el cambio afecta propiedades que son no actualizables.
+
+>  * ¿Qué pasa si editas directamente `main.tf.json` en lugar de la plantilla de variables?
+
+Si se edita `main.tf.json` de cada app estas tendrian valores estaticos independientes de variables.
 
 <details>
 <summary><strong>Fase 2: Entendiendo la inmutabilidad</strong></summary>
@@ -142,6 +188,14 @@ Cuando cambian variables de configuración, Terraform los mapea a **triggers** q
 
 </details>
 
+Solucion:
+
+1. Se realizaron cambios para las descripciones y nombres de la variable nombre dentro del modulo usado como plantilla
+2. Esto realiza un formateo correcto de JSON, ya que `jq` es un parser para JSON.
+3. Se realizaron estos cambios y se vio que el recurso `local_server` no existe como paquete aceptado por `hashicorp`
+5. se agrego una variable `api_key` dentro de las variables usadas en `network.tf.json`, se agrego `sensitive : true` para que no se muestre en el output al usar `terrafom plan o apply`.
+
+
 <details>
 <summary><strong>Fase 4: Integración final y discusión</strong></summary>
 
@@ -159,6 +213,43 @@ Cuando cambian variables de configuración, Terraform los mapea a **triggers** q
 
 </details>
 
+Solucion:
+
+>  * ¿Cómo extenderías este patrón para 50 módulos y 100 entornos?
+
+   Se podria realizar los siguientes cambios :
+
+```py
+    dev_dir = os.path.join(env_dir, "dev")
+    prod_dir = os.path.join(env_dir, "prod")
+    
+    os.makedirs(dev_dir, exist_ok=True)
+    os.makedirs(prod_dir, exist_ok=True)
+```
+Con se crea dos entornos por aplicacion, por ejemplo dentro de `app1`, se tendra directorios `dev` y `prod`.
+
+Para tener 100 apps, se cambio la lista siguiente que antes creaba 10:
+
+```py
+ENVS = [
+    {"name": f"app{i}", "network": f"net{i}"} for i in range(1, 51)
+]
+```
+
+>   * ¿Qué prácticas de revisión de código aplicarías a los `.tf.json`?
+
+Se podria usar lints y auto formatters para terraform, estos son cubiertos por extensiones de editor como `HashiCorp Terraform` para `VSCode`.
+
+>   * ¿Cómo gestionarías secretos en producción (sin Vault)?
+
+Los secretos podrian ponerse como variables y utilizar `sensitive = true`, otra forma seria crear un scrip python para que este cree el archivo `.tf` y con `os.getenv` de python se leerian los `secrets` de un archivo `.env`
+
+>   * ¿Qué workflows de revisión aplicarías a los JSON generados?
+
+Como en el paso anterior, puede usarse `jq` para formatear los JSON. Con esta herramienta, se podria crear un `hook` de `pre-commit` para que todos los archivos `.tf.json` en un repositorio remoto tengan un formato correcto.
+
+
+
 #### Ejercicios
 
 <details>
@@ -167,6 +258,24 @@ Cuando cambian variables de configuración, Terraform los mapea a **triggers** q
    * Crea un recurso "load\_balancer" que dependa de dos `local_server`. Simula drift en uno de ellos y observa el plan.
 
 </details>
+
+Solucion:
+
+Se creo el archivo `drift/main.tf`, en el que el recurso `load_balaner` depende de dos `local_server`, se ejecuto:
+
+```sh
+terraform init
+terraform plan
+terraform apply
+```
+
+Con esto se crearon los archivos `.lock` y `.state`. Despues se cambio el nombre del recurso `local_server_2` a `local_server_3`, al ejecutar:
+
+```sh
+terraform plan
+```
+
+Se observo que no se podria modifcar estos recursos porque no se cumple la condicion para `load_balancer` que es tener `local_server_2`.
 
 <details>
 <summary>2. <strong>CLI Interactiva</strong></summary>
@@ -178,6 +287,24 @@ Cuando cambian variables de configuración, Terraform los mapea a **triggers** q
      ```
 
 </details>
+
+Solucion:
+
+Para esto se uso la librera `argparse` en lugar de `click`, que viene con python. Se definio un parser con 3 flags (count, port y prefix):
+
+```py
+    parser = argparse.ArgumentParser(description="Crear apps")
+    parser.add_argument("--count", required=True, help="Numero de apps a crear")
+    parser.add_argument("--prefix", required=True, help="Prefijo de las app")
+    parser.add_argument("--port", required=True, help="Puerto de las redes de servidores en todas las apps")
+
+    args = parser.parse_args()
+```
+
+Luego se uso:
+- `count`: para crear cierta cantidad de apps con archivos `tf.json` dentro.
+- `prefix`: usado para los nombres de apps creados.
+- `port`: se parseo los archivos `network.tf.json` y se puso la flag port dentro de la variable `port` de terraform.
 
 <details>
 <summary>3. <strong>Validación de Esquema JSON</strong></summary>
