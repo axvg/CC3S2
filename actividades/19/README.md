@@ -671,6 +671,34 @@ proyecto_iac_local/
 
 </details>
 
+Solucion:
+
+Se agrega el servicio `database`:
+
+https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/actividades/19/Proyecto_iac_local/main.tf#L30-L34
+
+Los valores que usa, son la version, el puerto (como las apps) y connection_string.
+
+Tambien se agrega un local `connection_string` en `main.tf`, para hacer un `lookup()` entre las variables para la db:
+
+https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/actividades/19/Proyecto_iac_local/main.tf#L49
+
+En las variables se define el tipo y valor por defecto de `connection_string`:
+
+https://github.com/axvg/CC3S2/blob/54afef8742f4cb9986813cdc1ab2c39bac354c76/actividades/19/Proyecto_iac_local/variables.tf#L20-L23
+
+Adicionalmente se agrega `connection_string_tpl` para usar este valor (si existe usando condicionales en el archivo template `tpl`):
+
+https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/actividades/19/Proyecto_iac_local/modules/application_service/templates/config.json.tpl#L7-L9
+
+https://github.com/axvg/CC3S2/blob/54afef8742f4cb9986813cdc1ab2c39bac354c76/actividades/19/Proyecto_iac_local/modules/application_service/main.tf#L30
+
+El valor se mapea desde las variables definidas anteriormente.
+
+Para validar que este valor se encuentre se modifica el script python `validate_config.py`, este valida si existe y si es `string`:
+
+https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/actividades/19/Proyecto_iac_local/scripts/python/validate_config.py#L11-L13
+
 <details>
 <summary>
 <h2>2. Ejercicio de refactorización y principios</h2>
