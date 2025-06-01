@@ -1,22 +1,22 @@
 {
-    "variable": [
+  "variable": [
+    {
+      "name": [
         {
-            "name": [
-                {
-                    "type": "string",
-                    "default": "name-example-app",
-                    "description": "Nombre de la app que se usara como servidor local"
-                }
-            ]
-        },
-        {
-            "network": [
-                {
-                    "type": "string",
-                    "default": "lab-net",
-                    "description": "Nombre de la red local"
-                }
-            ]
+          "type": "string",
+          "default": "name-example-app",
+          "description": "Nombre de la app que se usara como servidor local"
         }
-    ]
+      ]
+    },
+    {
+      "network": [
+        {
+          "type": "string",
+          "default": "lab-net",
+          "description": "Nombre de la red local"
+        }
+      ]
+    }
+  ]
 }
