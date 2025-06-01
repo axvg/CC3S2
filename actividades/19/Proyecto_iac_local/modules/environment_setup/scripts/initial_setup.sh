@@ -1,5 +1,5 @@
-#!/bin/bash
-# Script: initial_setup.sh
+#!/usr/bin/env bash
+
 ENV_NAME=$1
 README_PATH=$2
 echo "Ejecutando setup inicial para el entorno: $ENV_NAME"

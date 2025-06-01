@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 SERVICE_PATH=$1
 SERVICE_NAME=$(basename "$SERVICE_PATH") # Asumir que el último componente es el nombre
 

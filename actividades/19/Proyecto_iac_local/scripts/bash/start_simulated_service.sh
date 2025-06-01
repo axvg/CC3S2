@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 APP_NAME=$1
 INSTALL_PATH=$2
 CONFIG_FILE=$3

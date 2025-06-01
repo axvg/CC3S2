@@ -8,7 +8,7 @@ def perform_complex_validations(config_data, file_path):
     warnings = []
     # Simular 20 líneas de validaciones
     app_name = config_data.get("applicationName", "")
-    if app_name == "database_connector":
+    if app_name == "database":
         if not isinstance(config.data.get("connectionString", str)) and not config.data.get("connection_string"):
             errors.append(f"[{file_path} 'connectionString' debe ser string]")
 
