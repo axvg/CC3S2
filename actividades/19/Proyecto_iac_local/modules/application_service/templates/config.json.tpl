@@ -4,7 +4,7 @@
     "listenPort": ${port_tpl},
     "deploymentTime": "${deployed_at_tpl}",
     "globalDeploymentId": "${deployment_id_tpl}",
-    "notes": "Este es un archivo de configuración autogenerado. ${message_tpl}",
+    "notes": "Este es un archivo de configuración autogenerado. ${issensitive_global_message_tpl? "valor ofuscado" : message_tpl }",
     %{ if connection_string_tpl != ""  && app_name_tpl == "database" ~}
     "connectionString": "${connection_string_tpl}",
     %{ endif ~}
