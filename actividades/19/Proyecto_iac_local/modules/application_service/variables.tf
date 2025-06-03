@@ -8,5 +8,5 @@
 
 variable "connection_string" {
   type    = string
-  default = ""
+  default = "fake_connection_string"
 }

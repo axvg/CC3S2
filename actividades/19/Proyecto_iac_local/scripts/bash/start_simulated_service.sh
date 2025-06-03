@@ -31,4 +31,11 @@ done
 echo $$ > "$PID_FILE"  # $$ es el PID del script actual
 echo "Servicio $APP_NAME 'iniciado'. PID guardado en $PID_FILE" >> "$LOG_FILE"
 echo "Servicio $APP_NAME 'iniciado'. PID: $(cat "$PID_FILE")"
+
+if [ "$APP_NAME" = "database" ]; then
+    DB_LOCK_FILE="$INSTALL_PATH/.db_lock"
+    echo "$(date): db lock for $APP_NAME" > "$DB_LOCK_FILE"
+    echo "db.lock creado: $DB_LOCK_FILE" >> "$LOG_FILE"
+fi
+
 echo "--- Fin inicio servicio $APP_NAME ---"

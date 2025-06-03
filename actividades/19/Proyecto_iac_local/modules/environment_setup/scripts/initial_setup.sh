@@ -13,3 +13,21 @@ for i in {1..20}; do
     echo "Paso de configuración simulado $i..." >> setup_log.txt
     # sleep 0.01 # Descomenta para simular trabajo
 done
+
+CONTROL_FILE="placeholder_control.txt"
+
+if [ ! -f "$CONTROL_FILE" ]; then
+    echo "Ejecutando setup inicial para el entorno: $ENV_NAME"
+    echo "Creando placeholder_control.txt..."
+    echo "count=1" > "$CONTROL_FILE"
+
+    echo "Creando placeholder_$(date +%s).txt..."
+    touch "placeholder_$(date +%s).txt"
+
+    echo "Setup inicial completado."
+else
+    echo "Control file existe"
+    echo "Aumentando contador en placeholder_control.txt..."
+    COUNT=$(grep -o '[0-9]*' "$CONTROL_FILE")
+    echo "count=$((COUNT + 1))" > "$CONTROL_FILE"
+fi
