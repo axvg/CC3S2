@@ -2,8 +2,9 @@
     "applicationName": "app1",
     "version": "1.0.2",
     "listenPort": 8081,
-    "deploymentTime": "2025-06-01T22:07:58Z",
-    "notes": "Este es un archivo de configuración autogenerado. Configuración gestionada por Terraform.",
+    "deploymentTime": "2025-06-03T05:31:58Z",
+    "globalDeploymentId": "66bffa34-bf89-4fc2-bb25-9b03608397ec",
+    "notes": "Este es un archivo de configuración autogenerado. valor ofuscado",
         "settings": {
         "featureA": true,
         "featureB": false,
