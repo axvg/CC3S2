@@ -12,6 +12,12 @@ def perform_complex_validations(config_data, file_path):
         if not isinstance(config.data.get("connectionString", str)) and not config.data.get("connection_string"):
             errors.append(f"[{file_path} 'connectionString' debe ser string]")
 
+    notes_config = config_data.get("notes", "")
+    if not isinstance(notes_config, str):
+        errors.append(f"[{file_path}] 'notes' debe ser un string.")
+    if "Configuración gestionada por Terraform." in notes_config:
+        warnings.append(f"[{file_path}] 'notes' tiene un fallo de seguridad critico")
+
     if not isinstance(config_data.get("applicationName"), str):
         errors.append(f"[{file_path}] 'applicationName' debe ser un string.")
     if not isinstance(config_data.get("listenPort"), int):
