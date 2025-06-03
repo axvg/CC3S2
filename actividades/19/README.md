@@ -714,6 +714,34 @@ https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/acti
 
 </details>
 
+Solucion:
+
+Se crea el script `generate_global_metada.py`, para generar ids de despliegues usando `uuid` (librera que viene con python):
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/scripts/python/generate_global_metadata.py#L1-L15
+
+Este script sera ejecutado por terraform por lo que se debe imprimir en format json. Se ejecuta en terraform usando `data "external"`:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/main.tf#L97-L102
+
+Este valor de output luego se puede refernciar con la sintaxis de `result`:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/main.tf#L38-L49
+
+Aqui se envia este valor que se ejecuto con `main.tf` al modulo `application_service` donde se crearan los archivos de configurion `config.json` usando el template `config.json.tpl`:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/modules/application_service/templates/config.json.tpl#L6
+
+Para recibir este valor debe ser definido en el `main.tf` de `application_service`:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/modules/application_service/main.tf#L30
+
+> ¿Cómo mejora esto la composabilidad y reduce la redundancia? ¿Cómo afecta la idempotencia?
+
+Al actualizar recursos este nuevo id global no afectara a los otros recursos dentro del sistema por lo que se cumple la composabilidad.
+
+Como el valor es el mismo para todas las aplicaciones que se crearan, este no tendra interferencia en la idempotencia puesto que quedara igual para los otros despues de distintas ejecuciones con `terraform apply`. Para 
+
 <details>
 <summary>
 <h2>3. Ejercicio de idempotencia y scripts externos</h2>
@@ -727,6 +755,21 @@ https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/acti
 
 </details>
 
+Solucion:
+
+Se modifica el script de bash `initial_setup.sh`, este creara un archivo control (si es que no existe) y dentro se pondra un contador para verificar cuantas veces se corrio este script ( o el flujo de generacion de environments puesto que estan ligados ).
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/modules/environment_setup/scripts/initial_setup.sh#L19-L25
+
+Ademas se crea el archivo `placeholder` con la fecha.
+
+En el caso que el archivo exista (inicialmente tendra el contenido `count=1`) entonces
+se parseara el archivo (usando grep) y se aumentara en uno el conteo. 
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/modules/environment_setup/scripts/initial_setup.sh#L28-L33
+
+Con este archivo `placeholder_control.txt` se podra revisar cuantas veces se ejecuto `terraform apply` y verificar la idempotencia puesto que solo se crea una vez y se usa una condicional para verificar su existencia.
+
 <details>
 <summary>
 <h2>4. Ejercicio de seguridad simulada y validación</h2>
@@ -739,6 +782,27 @@ https://github.com/axvg/CC3S2/blob/44d0a346aa177141f90b9050293b226c72769da2/acti
         3.  (Opcional) Modifica la plantilla `config.json.tpl` para ofuscar o no incluir directamente el `mensaje_global` si es demasiado sensible, tal vez solo una referencia.
 
 </details>
+
+Solucion: 
+
+Para validar este mensaje se obtiene el valor `notes` de los archivos `config.json`. Se verifica que `string` y que tiene el mismo valor `sensitive=true` (definido en `vars.tf`) en el directorio root:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/scripts/python/validate_config.py#L15-L19
+
+Si el contenido del mensaje esta dentro de `notes` se agrega a la lista de `warnings` que este archivo `validate_config.py` entrega al ejecutar `terraform plan` y `terraform apply`
+
+Como este valor se esta mostrando por que esta mapeado en el archivo template `config.json.tpl` se revisara una condicion para saber si es sensitive (secreta). Para esto `terraform` tiene una funcion `issensitive()` en el cual recibe como argumento la variable. Se pasa este nuevo valor booleana al template de esta manera:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/modules/application_service/main.tf#L31
+
+Con este valor se puede usar una condicional (ternario) en el archivo template para que
+el `mensaje_global` se muestre en caso de que esta nueva variable booleana sea falsa:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/modules/application_service/templates/config.json.tpl#L7
+
+Si es `sensitive` se mostrara `valor ofuscado` en los archivos config generados para cada aplicacion:
+
+https://github.com/axvg/CC3S2/blob/072882ba45c10165d7c6ef783440d2a5b3c65337/actividades/19/Proyecto_iac_local/generated_environment/services/app1_v1.0.2/config.json#L7
 
 #### Presentación
 
