@@ -27,6 +27,7 @@ data "template_file" "app_config" {
     deployed_at_tpl       = timestamp()
     message_tpl           = var.global_message_from_root
     connection_string_tpl = var.connection_string
+    deployment_id_tpl     = var.deployment_id
   }
 }
 

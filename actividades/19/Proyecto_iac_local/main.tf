@@ -29,8 +29,8 @@ locals {
     # app3 = { version = "2.1.0", port = 8083 }
     # app4 = { version = "1.0.0", port = 8084 }
     database = {
-      version           = "1.0.0"
-      port              = 1234
+      version = "1.0.0"
+      port    = 1234
     }
   }
 }
@@ -45,6 +45,7 @@ module "simulated_apps" {
   base_install_path        = "${path.cwd}/generated_environment/services"
   global_message_from_root = var.mensaje_global # Pasar la variable sensible
   python_exe               = var.python_executable
+  deployment_id            = data.external.deployment_info.result.deployment_id
 }
 
 output "detalles_apps_simuladas" {
@@ -90,5 +91,12 @@ resource "null_resource" "check_all_healths" {
       done
     EOT
     interpreter = ["bash", "-c"]
+  }
+}
+
+data "external" "deployment_info" {
+  program = [var.python_executable, "${path.cwd}/scripts/python/generate_global_metadata.py"]
+  query = {
+    deployment_id = "env_id"
   }
 }

@@ -21,3 +21,9 @@ variable "connection_string" {
   type    = string
   default = ""
 }
+
+variable "deployment_id" {
+  description = "global deployment Id"
+  type        = string
+  default     = "env_id"
+}

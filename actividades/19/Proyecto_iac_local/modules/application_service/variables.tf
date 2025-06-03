@@ -10,3 +10,7 @@ variable "connection_string" {
   type    = string
   default = "fake_connection_string"
 }
+
+variable "deployment_id" {
+  type = string
+}
