@@ -1,0 +1,7 @@
+digraph G {
+  rankdir = "RL";
+  node [shape = rect, fontname = "sans-serif"];
+  "null_resource.firewall" [label="null_resource.firewall"];
+  "null_resource.network" [label="null_resource.network"];
+  "null_resource.server" [label="null_resource.server"];
+}
