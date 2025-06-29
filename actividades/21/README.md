@@ -366,3 +366,25 @@ Se implemento el metodo `build_group` en el `InfrastructureBuilder`. Este metodo
 > * (Opcional) Documento con flujo de integración a Terraform Cloud.
 
 </details>
+
+#### 3.1 Comparativa Factory vs Prototype
+
+El patron **Factory** desacopla al cliente del proceso de instanciacion de un objeto. Se invoca un metodo que retorna una nueva instancia, ocultando la logica de creacion. Es optimo para la generacion de recursos con una configuracion estandarizada donde cada instancia debe ser nueva e independiente.
+
+El patron **Prototype**, en cambio, crea nuevos objetos clonando una instancia existente. Su principal ventaja es el rendimiento cuando la instanciacion de un objeto es costosa. En lugar de reconstruir el estado del objeto desde cero, se copia un estado ya configurado. La personalizacion se logra post-clonacion mediante un `mutator`.
+
+La eleccion depende del costo de creacion vs el costo de clonacion. Para objetos simples, una Factory es mas directa. Para objetos complejos con estados iniciales costosos de construir, el Prototype es mas eficiente, aunque se debe considerar el overhead del `deepcopy`.
+
+#### 3.2 y 3.3 Implementacion de Adapter y Tests
+
+Se creo el archivo `iac_patterns/adapter.py` para implementar el patron Adapter. Este adapta un `null_resource` para que se comporte como un `mock_cloud_bucket`, mapeando sus `triggers` a los atributos del bucket.
+
+Ademas, se creo el directorio `tests/` con el archivo `test_patterns.py`. Este archivo contiene tests para `Singleton`, `Prototype` y `Adapter` usando `pytest`.
+
+#### 3.4 Escalabilidad de JSON y Estrategias de Fragmentacion
+
+Al generar la infraestructura con 15 y 150 recursos, se observa un crecimiento lineal en el tamaño del archivo `main.tf.json`.
+
+Un archivo JSON de 150  hara que la velocidad del ciclo de CI/CD sea baja. La generacion del archivo toma mas tiempo y los comandos de Terraform como `plan` y `apply` se vuelven muy lentos porque tienen que procesar un unico archivo grande. Revisar cambios en un pull request tambien se volveria una tarea mas grande.
+
+La solucion es usar **modulos** como se hizo en la Fase 2. En lugar de tener un solo archivo gigante, se divide la infraestructura en partes logicas (modulos), cada una con su propio archivo de configuracion. El archivo principal solo contiene referencias a estos modulos. Esto hace que el codigo sea mas organizado, mantenible y escalable. Los `plan` y `apply` se pueden incluso ejecutar por modulo, acelerando el proceso de despliegue y CI.
