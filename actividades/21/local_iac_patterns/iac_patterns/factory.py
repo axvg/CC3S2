@@ -44,3 +44,12 @@ class NullResourceFactory:
                 }]
             }]
         }
+
+
+class TimestampedNullResourceFactory(NullResourceFactory):
+    @staticmethod
+    def create(name: str, fmt: str, triggers: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        resource_dict = NullResourceFactory.create(name, triggers)
+        ts = datetime.utcnow().strftime(fmt)
+        resource_dict["resource"]["null_resource"][name]["triggers"]["timestamp"] = ts
+        return resource_dict
