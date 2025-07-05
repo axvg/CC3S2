@@ -6,13 +6,21 @@ Referencia para la actividad: [axvg/Ejemplos-github-actions](https://github.com/
 
 #### Ejercicio teórico
 
-* ¿Qué es GitHub Actions?
-* Redacta una definición de "implementación continua" (≤150 palabras), diferenciándola de "entrega continua" y "despliegue continuo".
-* Incluye un ejemplo de un proyecto Python (por ejemplo, un script `app.py` que escribas tú) donde al hacer `push` a `main` se publique
+> * ¿Qué es GitHub Actions?
+
+Github Actions es un servicio de Github que permite correr workflows automatizados en respuesta a eventos y acciones en un repositorio, como commits o pull requests. Permite integrar herramientas de CI/CD para compilar, probar y desplegar codigo de manera eficiente y escalable.
+
+> * Redacta una definición de "implementación continua" (≤150 palabras), diferenciándola de "entrega continua" y "despliegue continuo".
+
+Una continuous integration (CI) es una practica de desarrollo de software donde los cambios en el codigo se integran frecuentemente en un repositorio compartido, permitiendo detectar errores rapidamente. Se diferencia de la entrega continua (CD), que asegura que el software este siempre listo para ser desplegado a produccion, y del despliegue continuo, que automatiza el proceso de llevar esos cambios a produccion sin intervencion manual.
+
+> * Incluye un ejemplo de un proyecto Python (por ejemplo, un script `app.py` que escribas tú) donde al hacer `push` a `main` se publique
   automáticamente un paquete en PyPI de prueba.
 
-#### Ejercicio práctico
-
+<details>
+<summary><strong>
+Ejercicio práctico
+</strong></summary>
 * En la raíz del repo crea un script Python `deploy.py` que imprima:
 
   ```python
@@ -31,10 +39,29 @@ Referencia para la actividad: [axvg/Ejemplos-github-actions](https://github.com/
      ```
   2. Ejecute `python deploy.py`.
 * Verifica en Actions que veas la salida de tu script.
+</details>
+
+Solucion:
+
+Se realizan los cambios en el repositorio propio:
+
+https://github.com/axvg/Ejemplos-github-actions/blob/7a59bac21a4aa61a53053600a963beb626e9679e/.github/workflows/ci.yml#L27
+
+https://github.com/axvg/Ejemplos-github-actions/blob/7a59bac21a4aa61a53053600a963beb626e9679e/deploy.py#L1
+
+Con estos dos cambios ejecutamos el script de python, tambien se necesita actions checkout y setup-python antes.
+
+![00](imgs/00.png)
 
 ### ¿Por qué automatizar la implementación?
 
 * Crea en el repo un archivo `Riesgos-Automatización.md` con una tabla que compare **3 ventajas** de un deploy automatizado vs **3 riesgos** de hacerlo manual, y propone contramedidas.
+
+Solucion:
+
+Se crea el archivo Riesgos-Automatizacio.md con la siguiente tabla:
+
+![01](imgs/01.png)
 
 #### Ejercicio práctico
 
