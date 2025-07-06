@@ -9,7 +9,7 @@ Tu equipo está desarrollando dos microservicios en Python (Users y Orders) que 
 * Evolucionar a un clúster de Kubernetes administrado en producción.
 * Automatizar tests, builds y despliegues con GitHub Actions.
 
->Utiliza como referencia el siguiente repositorio: [Microservicios, Kubernetes y Github Actions](https://github.com/axvg/CC3S2/tree/main/2025-1/actividades/27/microservices-k8s)
+>Utiliza como referencia el siguiente repositorio: [Microservicios, Kubernetes y Github Actions](https://github.com/axvg/CC3S2/tree/master/actividades/27/microservices-k8s)
 
 #### A. Docker y Docker Compose
 
